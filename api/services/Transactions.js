@@ -49,40 +49,50 @@ var model = {
 
             },
             function (arg1, callback) {
-                User.findOne({
-                    _id: data.userId
-                }).exec(function (err, found) {
-                    if (err) {
-                        callback(err, null);
-                    } else if (found) {
-                        found.balance = found.balance - Number(data.transaction.amount)
-                        found.save(function (err, data) {
-                            if (err) {
-                                console.log("error occured");
-                                callback(err, null);
-                            } else {
-                                console.log("balance updated");
-                                callback(null, found.balance);
-                            }
-                        });
-                    }
-                });
+                if (arg1 == 'found') {
+                    User.findOne({
+                        _id: data.userId
+                    }).exec(function (err, found) {
+                        if (err) {
+                            callback(err, null);
+                        } else if (found && found.balance >= Number(data.transaction.amount)) {
+                            found.balance = found.balance - Number(data.transaction.amount)
+                            found.save(function (err, data) {
+                                if (err) {
+                                    console.log("error occured");
+                                    callback(err, null);
+                                } else {
+                                    console.log("balance updated");
+                                    callback(null, found.balance);
+                                }
+                            });
+                        } else {
+                            callback(err, null);
+                        }
+                    });
+                } else {
+                    callback("Invalid amount", null);
+                }
             },
             function (balance, callback) {
-                Transactions.saveData(data, function (err, savedData) {
-                    if (err) {
-                        console.log("error occured");
-                        callback(err, null);
-                    } else if (savedData) {
-                        callback(null, balance);
-                    }
-                });
-                
+                if (balance!=null) {
+                    Transactions.saveData(data, function (err, savedData) {
+                        if (err) {
+                            console.log("error occured");
+                            callback(err, null);
+                        } else if (savedData) {
+                            callback(null, balance);
+                        }
+                    });
+                } else {
+                    callback("Invalid amount", null);
+                }
+
             }
         ], function (err, result) {
-
             if (err) {
                 console.log(err);
+                callback(err, null);
             } else {
                 var responseData = {}
                 responseData.status = "OK";
@@ -143,6 +153,8 @@ var model = {
 
             if (err) {
                 console.log(err);
+                callback(err, null);
+                
             } else {
                 var responseData = {}
                 responseData.status = "OK";
