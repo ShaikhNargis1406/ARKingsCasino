@@ -8,10 +8,7 @@ module.exports = function(err, data) {
             value: false
         });
     } else if (data) {
-        res.json({
-            data: data,
-            value: true
-        });
+        res.json(data);
     } else {
         res.json({
             data: "No Data Found",

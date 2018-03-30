@@ -1,14 +1,39 @@
 var schema = new Schema({
-    name: {
+
+    firstName: {
         type: String,
-        required: true,
-        excel: true,
+        required: true
+    },
+    lastName: {
+        type: String,
+        required: true
+    },
+    nickname: {
+        type: String,
+        required: true
+    },
+    country: {
+        type: String,
+        required: true
+    },
+    language: {
+        type: String,
+        required: true
+    },
+    currency: {
+        type: String,
+    },
+    balance: {
+        type: Number,
+        default: 0
     },
     email: {
         type: String,
         validate: validators.isEmail(),
-        excel: "User Email",
         unique: true
+    },
+    sessionId: {
+        type: String
     },
     dob: {
         type: Date,
@@ -186,8 +211,24 @@ var model = {
      * @param {callback} callback
      * @returns  that number, plus one.
      */
-    getAllMedia: function (data, callback) {
-
+    balanceWallet: function (data, callback) {
+        User.findOne({
+            _id: data.userId
+        }).exec(function (err, found) {
+            if (err) {
+                callback(err, null);
+            } else if (found) {
+                console.log("found.balance;",found)
+                var responseData = {}
+                responseData.status = "OK";
+                responseData.balance = found.balance;
+                responseData.bonus = 0.00;
+                responseData.uuid = data.uuid;
+                callback(null, responseData);
+            } else {
+                callback("Invalid data", null);
+            }
+        });
     }
 };
 module.exports = _.assign(module.exports, exports, model);
