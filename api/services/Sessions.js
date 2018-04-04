@@ -25,7 +25,6 @@ var model = {
         }, {
             status: "Inactive"
         }).exec(function (err, found) {
-            console.log("error---data", err, found);
             if (err) {
                 console.log('error');
                 callback(err, null);
