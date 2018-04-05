@@ -214,7 +214,9 @@ var model = {
      */
     balanceWallet: function (data, callback) {
         User.findOne({
-            _id: data.userId
+            _id: data.userId,
+            sessionId: data.sid,
+            status: "Active"
         }).exec(function (err, found) {
             if (err) {
                 callback(err, null);

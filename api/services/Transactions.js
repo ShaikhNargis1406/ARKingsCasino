@@ -35,9 +35,9 @@ var model = {
     debitWallet: function (data, callback) {
         async.waterfall([
             function (callback) {
-                Sessions.findOne({
-                    userId: data.userId,
-                    _id: data.sid,
+                User.findOne({
+                    _id: data.userId,
+                    sessionId: data.sid,
                     status: "Active"
                 }).exec(function (err, found) {
                     if (err) {
@@ -111,9 +111,9 @@ var model = {
     creditWallet: function (data, callback) {
         async.waterfall([
             function (callback) {
-                Sessions.findOne({
-                    userId: data.userId,
-                    _id: data.sid,
+                User.findOne({
+                    _id: data.userId,
+                    sessionId: data.sid,
                     status: "Active"
                 }).exec(function (err, found) {
                     if (err) {
@@ -186,9 +186,9 @@ var model = {
     cancelWallet: function (data, callback) {
         async.waterfall([
                 function (callback) {
-                    Sessions.findOne({
-                        userId: data.userId,
-                        _id: data.sid,
+                    User.findOne({
+                        _id: data.userId,
+                        sessionId: data.sid,
                         status: "Active"
                     }).exec(function (err, found) {
                         if (err) {
