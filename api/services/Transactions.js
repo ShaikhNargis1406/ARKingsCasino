@@ -1,8 +1,5 @@
 var schema = new Schema({
-    sid: {
-        type: Schema.Types.ObjectId,
-        ref: 'Sessions'
-    },
+    sid: String,
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User'
