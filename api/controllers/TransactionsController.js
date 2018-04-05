@@ -1,16 +1,17 @@
 module.exports = _.cloneDeep(require("sails-wohlig-controller"));
 var request = require('request');
+
 var controller = {
     check: function (req, res) {
         if (req.body && req.body.userId && req.query.authToken==global["env"].apitoken) {
-            Sessions.checksession(req.body, res.callback);
+            User.checksession(req.body, res.callback);
         } else {
             res.callback("Please provide Valid AuthToken", null);
         }
     },
     sid: function (req, res) {
         if (req.body && req.body.userId && req.query.authToken==global["env"].apitoken) {
-            Sessions.checksession(req.body, res.callback);
+            User.createSid(req.body, res.callback);
         } else {
             res.callback("Please provide Valid AuthToken", null);
         }

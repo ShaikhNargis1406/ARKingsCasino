@@ -38,15 +38,45 @@ module.exports.routes = {
         skipAssets: true,
         skipRegex: /api|backend/i
     },
-    'GET /gitPull/:data': {
+    '/gitPull/:data': {
         controller: "WebController",
         action: "gitPull",
         skipAssets: true,
         skipRegex: /api|backend/i
     },
-    'GET /*': {
-        controller: "WebController",
-        action: "index",
+    '/check': {
+        controller: "TransactionsController",
+        action: "check",
+        skipAssets: true,
+        skipRegex: /api|backend/i
+    },
+    '/sid': {
+        controller: "TransactionsController",
+        action: "sid",
+        skipAssets: true,
+        skipRegex: /api|backend/i
+    },
+    '/balance': {
+        controller: "TransactionsController",
+        action: "balance",
+        skipAssets: true,
+        skipRegex: /api|backend/i
+    },
+    '/debit': {
+        controller: "TransactionsController",
+        action: "debit",
+        skipAssets: true,
+        skipRegex: /api|backend/i
+    },
+    '/credit': {
+        controller: "TransactionsController",
+        action: "credit",
+        skipAssets: true,
+        skipRegex: /api|backend/i
+    },
+    '/cancel': {
+        controller: "TransactionsController",
+        action: "cancel",
         skipAssets: true,
         skipRegex: /api|backend/i
     },

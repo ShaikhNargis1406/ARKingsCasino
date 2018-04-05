@@ -1,3 +1,4 @@
+const uuidv1 = require('uuid/v1');
 var schema = new Schema({
 
     firstName: {
@@ -35,6 +36,7 @@ var schema = new Schema({
     sessionId: {
         type: String
     },
+    status:String,
     dob: {
         type: Date,
         excel: {
@@ -229,6 +231,65 @@ var model = {
                 callback("Invalid data", null);
             }
         });
+    },
+    checksession: function (data, callback) {
+        User.findOne({
+            _id: data.userId,
+            sessionId: data.sid,
+            status: "Active"
+        }).exec(function (err, found) {
+            if (err) {
+                console.log('error');
+                callback(err, null);
+            } else if (found) {
+                console.log("found");
+                found.sessionId=uuidv1();
+                found.save(function (err, savedData) {
+                    if (err) {
+                        console.log("error occured");
+                        callback('INVALID_PARAMETER', null);
+                    } else {
+                        var responseData = {}
+                        responseData.status = "OK";
+                        responseData.sid = savedData.sessionId;
+                        responseData.uuid = data.uuid;
+                        callback(null, responseData);
+                    }
+                });
+            }
+            else{
+                callback('INVALID_SID',null); 
+            }
+        })
+    },
+    createSid: function (data, callback) {
+        User.findOne({
+            _id: data.userId
+        }).exec(function (err, found) {
+            if (err) {
+                console.log('error');
+                callback(err, null);
+            } else if (found) {
+                console.log(found);
+                found.sessionId=uuidv1();
+                found.status="Active"
+                found.save(function (err, savedData) {
+                    if (err) {
+                        console.log("error occured");
+                        callback('INVALID_PARAMETER', null);
+                    } else {
+                        var responseData = {}
+                        responseData.status = "OK";
+                        responseData.sid = savedData.sessionId;
+                        responseData.uuid = data.uuid;
+                        callback(null, responseData);
+                    }
+                });
+            }
+            else{
+                callback('INVALID_USERID',null); 
+            }
+        })
     }
 };
 module.exports = _.assign(module.exports, exports, model);
