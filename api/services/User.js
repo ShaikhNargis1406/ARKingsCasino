@@ -221,7 +221,7 @@ var model = {
             if (err) {
                 callback(err, null);
             } else if (found) {
-                console.log("found.balance;",found)
+                // console.log("found.balance;",found)
                 var responseData = {}
                 responseData.status = "OK";
                 responseData.balance = found.balance;
@@ -229,7 +229,7 @@ var model = {
                 responseData.uuid = data.uuid;
                 callback(null, responseData);
             } else {
-                callback("Invalid data", null);
+                callback("INVALID_SID", null);
             }
         });
     },
