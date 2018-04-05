@@ -35,7 +35,7 @@ var model = {
                 Sessions.saveData(newData, function (err, savedData) {
                     if (err) {
                         console.log("error occured");
-                        callback(err, null);
+                        callback('INVALID_PARAMETER', null);
                     } else {
                         var responseData = {}
                         responseData.status = "OK";
@@ -47,7 +47,7 @@ var model = {
 
             }
             else{
-                callback(null, {}); 
+                callback('INVALID_SID',null); 
             }
         })
     }

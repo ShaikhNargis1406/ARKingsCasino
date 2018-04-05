@@ -73,7 +73,7 @@ var model = {
                         }
                     });
                 } else {
-                    callback("Invalid token", 'token');
+                    callback("INVALID_SID", 'token');
                 }
             },
             function (balance, callback) {
@@ -87,7 +87,10 @@ var model = {
                         }
                     });
                 } else {
-                    callback("Invalid request", null);
+                    if (balance != 'token') 
+                    callback("INVALID_SID", null);
+                    if ( balance != null) 
+                    callback("INSUFFICIENT_FUNDS", null);
                 }
 
             }
@@ -146,7 +149,7 @@ var model = {
                     });
                 } else {
                     console.log('inside not found')
-                    callback("Invalid sid", 'token');
+                    callback("INVALID_SID", 'token');
                 }
             },
             function (balance, callback) {
@@ -161,7 +164,7 @@ var model = {
                         }
                     });
                 } else {
-                    callback("Invalid sid", null);
+                    callback("INVALID_SID", null);
                 }
             }
         ], function (err, result) {
@@ -221,7 +224,7 @@ var model = {
                         });
                     } else {
                         console.log('inside not found')
-                        callback("Invalid sid", 'token');
+                        callback("INVALID_SID", 'token');
                     }
                 },
                 function (balance, callback) {
@@ -235,7 +238,7 @@ var model = {
                             }
                         });
                     } else {
-                        callback("Invalid sid", null);
+                        callback("INVALID_SID", null);
                     }
                 }
             ],

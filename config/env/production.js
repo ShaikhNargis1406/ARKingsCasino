@@ -27,8 +27,11 @@ module.exports = {
 
   port: 82,
   realHost: "http://wohlig.io:82",
-  emails: ["chintan@wohlig.com", "jagruti@wohlig.com", "tushar@wohlig.com", "chirag@wohlig.com", "harsh@wohlig.com"]
+  emails: ["chintan@wohlig.com", "jagruti@wohlig.com", "tushar@wohlig.com", "chirag@wohlig.com", "harsh@wohlig.com"],
 
+  hostname: "kingscasino.uat1.evo-test.com",
+  casinokey: "kingscasino00001",
+  apitoken: "test123"
   /***************************************************************************
    * Set the log level in production environment to "silent"                 *
    ***************************************************************************/
