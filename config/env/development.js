@@ -23,6 +23,8 @@ module.exports = {
     hostname: "kingscasino.uat1.evo-test.com",
     casinokey: "kingscasino00001",
     apitoken: "test123",
+    authToken:"stage1234",
+    evoURL:"https://kingscasino.uat1.evo-test.com/ua/v1/kingscasino00001/stage1234 ",
 
     port: 1337,
     realHost: "http://wohlig.io:1337",

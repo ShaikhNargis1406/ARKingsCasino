@@ -225,7 +225,6 @@ var model = {
                 var responseData = {}
                 responseData.status = "OK";
                 responseData.balance = found.balance;
-                responseData.bonus = 0.00;
                 responseData.uuid = data.uuid;
                 callback(null, responseData);
             } else {

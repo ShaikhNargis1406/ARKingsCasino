@@ -1,4 +1,6 @@
 module.exports = _.cloneDeep(require("sails-wohlig-controller"));
+const uuidv1 = require('uuid/v1');
+
 var controller = {
     index: function (req, res) {
         res.json({
@@ -100,7 +102,60 @@ var controller = {
     },
     sendmail: function (req, res) {
         Config.sendEmail("chintan@wohlig.com", "jagruti@wohlig.com", "first email from endgrid", "", "<html><body>dome content</body></html>");
-    }
+    },
+    createEntry: function (req, res) {
+        var data = {
+            "uuid":uuidv1(),
+            "player": {
+                "id": req.body._id,
+                "update": true,
+                "firstName": req.body.firstName,
+                "lastName": req.body.lastName,
+                "nickname": req.body.nickname,
+                "country": req.body.country,
+                "language": req.body.language,
+                "currency": req.body.currency,
+                "session": {
+                    "id": req.body.sessionId,
+                    "ip": "103.216.164.118"
+                }
+            },
+            "config": {
+                "brand": {
+                    "id": "1",
+                    "skin": "1"
+                },
+                "game": {
+                    "category": req.body.game,
+                    "interface": "view1"
+                },
+                "channel": {
+                    "wrapped": false,
+                    "mobile": false
+                },
+                "urls": {
+                    "cashier": "http://www.chs.ee",
+                    "responsibleGaming": "http://www.RGam.ee",
+                    "lobby": "http://www.lobb.ee",
+                    "sessionTimeout": "http://www.sesstm.ee"
+                }
+            }
+        }
+        console.log("data",data)
+        if (req.body) {
+            request.post({
+                url: global["env"].evoURL,
+                body: data,
+                json: true
+              }, function(error, response, body){
+                console.log(error,body);
+                res.callback(error, body);
+            });
+
+        } else {
+            res.callback("Please provide Valid AuthToken", null);
+        }
+    },
 
 };
 module.exports = _.assign(module.exports, controller);

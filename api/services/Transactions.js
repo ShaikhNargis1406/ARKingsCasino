@@ -99,7 +99,6 @@ var model = {
                 var responseData = {}
                 responseData.status = "OK";
                 responseData.balance = result;
-                responseData.bonus = 1.00;
                 responseData.uuid = data.uuid;
                 callback(null, responseData);
             }
@@ -174,7 +173,6 @@ var model = {
                 var responseData = {}
                 responseData.status = "OK";
                 responseData.balance = result;
-                responseData.bonus = 1.00;
                 responseData.uuid = data.uuid;
                 callback(null, responseData);
             }
@@ -247,7 +245,6 @@ var model = {
                     var responseData = {}
                     responseData.status = "OK";
                     responseData.balance = result;
-                    responseData.bonus = 1.00;
                     responseData.uuid = data.uuid;
                     callback(null, responseData);
                 }
