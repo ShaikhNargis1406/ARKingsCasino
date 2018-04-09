@@ -84,17 +84,19 @@ var model = {
                         }
                     });
                 } else {
-                    if (balance != 'token') 
-                    callback("INVALID_SID", null);
-                    if ( balance != null) 
-                    callback("INSUFFICIENT_FUNDS", null);
+                    if (balance != 'token')
+                        callback("INVALID_SID", null);
+                    if (balance != null)
+                        callback("INSUFFICIENT_FUNDS", null);
                 }
 
             }
         ], function (err, result) {
             if (err) {
                 console.log(err);
-                callback(err, null);
+                var responseData = {}
+                responseData.status = err;
+                callback(null, responseData);
             } else {
                 var responseData = {}
                 responseData.status = "OK";
@@ -166,9 +168,9 @@ var model = {
         ], function (err, result) {
 
             if (err) {
-                console.log(err);
-                callback(err, null);
-
+                var responseData = {}
+                responseData.status = err;
+                callback(null, responseData);
             } else {
                 var responseData = {}
                 responseData.status = "OK";
@@ -240,7 +242,9 @@ var model = {
             function (err, result) {
 
                 if (err) {
-                    console.log(err);
+                    var responseData = {}
+                    responseData.status = err;
+                    callback(null, responseData);
                 } else {
                     var responseData = {}
                     responseData.status = "OK";

@@ -228,7 +228,9 @@ var model = {
                 responseData.uuid = data.uuid;
                 callback(null, responseData);
             } else {
-                callback("INVALID_SID", null);
+                var responseData = {}
+                responseData.status = "INVALID_SID";
+                callback(null, responseData);
             }
         });
     },
@@ -258,7 +260,9 @@ var model = {
                 });
             }
             else{
-                callback('INVALID_SID',null); 
+                var responseData = {}
+                responseData.status = "INVALID_SID";
+                callback(null, responseData);
             }
         })
     },
@@ -287,7 +291,9 @@ var model = {
                 });
             }
             else{
-                callback('INVALID_USERID',null); 
+                var responseData = {}
+                responseData.status = "INVALID_USERID";
+                callback(null, responseData);
             }
         })
     }
