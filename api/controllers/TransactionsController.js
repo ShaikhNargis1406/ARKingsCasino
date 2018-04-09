@@ -3,7 +3,7 @@ var request = require('request');
 
 var controller = {
     check: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId ) {
             User.checksession(req.body, res.callback);
         } else {
             var responseData = {}
@@ -12,7 +12,7 @@ var controller = {
         }
     },
     sid: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId ) {
             User.createSid(req.body, res.callback);
         } else {
             var responseData = {}
@@ -21,7 +21,7 @@ var controller = {
         }
     },
     balance: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId ) {
             User.balanceWallet(req.body, res.callback);
         } else {
             var responseData = {}
@@ -30,7 +30,7 @@ var controller = {
         }
     },
     debit: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId ) {
             Transactions.debitWallet(req.body, res.callback);
         } else {
             var responseData = {}
@@ -39,7 +39,7 @@ var controller = {
         }
     },
     credit: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId ) {
             Transactions.creditWallet(req.body, res.callback);
         } else {
             var responseData = {}
@@ -48,7 +48,7 @@ var controller = {
         }
     },
     cancel: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId ) {
             Transactions.cancelWallet(req.body, res.callback);
         } else {
             var responseData = {}
