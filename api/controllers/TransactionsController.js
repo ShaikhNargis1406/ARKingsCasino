@@ -4,7 +4,7 @@ var request = require('request');
 var controller = {
     check: function (req, res) {
         if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
-            User.checksession(req.body, res.callback);
+            Sessions.checksession(req.body, res.callback);
         } else {
             var responseData = {}
             responseData.status = "INVALID_TOKEN_ID";
@@ -13,13 +13,14 @@ var controller = {
     },
     sid: function (req, res) {
         if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
-            User.createSid(req.body, res.callback);
+            Sessions.createSid(req.body, res.callback);
         } else {
             var responseData = {}
             responseData.status = "INVALID_TOKEN_ID";
             res.callback(null, responseData);
         }
     },
+  
     balance: function (req, res) {
         if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
             User.balanceWallet(req.body, res.callback);
