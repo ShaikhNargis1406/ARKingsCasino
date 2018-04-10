@@ -19,7 +19,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             "country": "HK",
           "language": "hk",
           "currency": "HKD",
-            "sessionId": "0e8ad1b0-3bdd-11e8-a4c6-69358120a91c",
+            "sessionId": "1f2a2a80-3bfa-11e8-bb41-3b4ac0a49471",
             "game":"roulette"
         }
         $scope.template = TemplateService.getHTML("content/home.html");
