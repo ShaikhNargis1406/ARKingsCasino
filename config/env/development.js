@@ -27,6 +27,6 @@ module.exports = {
     evoURL:"https://kingscasino.uat1.evo-test.com/ua/v1/kingscasino00001/test123",
 
     port: 1337,
-    realHost: "http://35.186.145.97:1337",
+    realHost: "http://ar.wohlig.co.in",
     emails: ["chintan@wohlig.com", "jagruti@wohlig.com", "tushar@wohlig.com", "chirag@wohlig.com", "harsh@wohlig.com", "sohan@wohlig.com"]
 };
