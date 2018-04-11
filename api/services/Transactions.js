@@ -33,16 +33,19 @@ var model = {
         async.waterfall([
             function (callback) {
                 Sessions.findOne({
-                    userId: data.userId,
                     sessionId: data.sid,
                     status: "Active"
                 }).exec(function (err, found) {
                     if (err) {
-                        callback(err, null);
+                        var responseData = {}
+                        responseData.status = 'INVALID_SID';
+                        callback(err, responseData);
                     } else if (found) {
                         callback(null, 'found');
                     } else {
-                        callback(null, null);
+                        var responseData = {}
+                        responseData.status = 'INVALID_SID';
+                        callback("INVALID_SID", responseData);
                     }
                 });
             },
@@ -52,50 +55,55 @@ var model = {
                         _id: data.userId
                     }).exec(function (err, found) {
                         if (err) {
-                            callback(err, null);
+                            var responseData = {}
+                            responseData.status = 'INVALID_PARAMETER';
+                            callback(err, responseData);
                         } else if (found && found.balance >= Number(data.transaction.amount)) {
                             found.balance = found.balance - Number(data.transaction.amount)
                             found.save(function (err, data) {
                                 if (err) {
-                                    console.log("error occured");
-                                    callback(err, null);
+                                    var responseData = {}
+                                    responseData.status = 'UNKNOWN_ERROR';
+                                    callback(err, responseData);
                                 } else {
                                     console.log("balance updated");
-                                    callback(null, found.balance);
+                                    callback(null, Number(found.balance));
                                 }
                             });
                         } else {
-                            callback(err, null);
+                            var responseData = {}
+                            responseData.status = 'INSUFFICIENT_FUNDS';
+                            callback('INSUFFICIENT_FUNDS', responseData);
                         }
                     });
                 } else {
-                    callback("INVALID_SID", 'token');
+                    var responseData = {}
+                    responseData.status = 'INVALID_SID';
+                    callback('INVALID_SID', responseData);
                 }
             },
             function (balance, callback) {
-                if (balance != 'token' || balance != null) {
+                if (!isNaN(balance)) {
                     Transactions.saveData(data, function (err, savedData) {
                         if (err) {
-                            console.log("error occured");
-                            callback(err, null);
+                            var responseData = {}
+                            responseData.status = 'UNKNOWN_ERROR';
+                            callback(err, responseData);
                         } else if (savedData) {
                             callback(null, balance);
                         }
                     });
                 } else {
-                    if (balance != 'token')
-                        callback("INVALID_SID", null);
-                    if (balance != null)
-                        callback("INSUFFICIENT_FUNDS", null);
+                    var responseData = {}
+                    responseData.status = 'INSUFFICIENT_FUNDS';
+                    callback('err', responseData);
                 }
 
             }
         ], function (err, result) {
             if (err) {
                 console.log(err);
-                var responseData = {}
-                responseData.status = 'INVALID_PARAMETER';
-                callback(null, responseData);
+                callback(null, result);
             } else {
                 var responseData = {}
                 responseData.status = "OK";
