@@ -33,7 +33,7 @@ module.exports = {
     casinokey: "kingscasino00001",
     apitoken: "test123",
     authToken:"stage1234",
-    evoURL:"https://kingscasino.uat1.evo-test.com/ua/v1/kingscasino00001/stage1234 ",
+    evoURL:"https://kingscasino.uat1.evo-test.com/ua/v1/kingscasino00001/test123",
 
   /***************************************************************************
    * Set the log level in production environment to "silent"                 *
