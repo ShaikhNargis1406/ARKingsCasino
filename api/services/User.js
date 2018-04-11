@@ -35,7 +35,7 @@ var schema = new Schema({
     sessionId: {
         type: String
     },
-    status:String,
+    status: String,
     dob: {
         type: Date,
         excel: {
@@ -213,26 +213,45 @@ var model = {
      * @returns  that number, plus one.
      */
     balanceWallet: function (data, callback) {
-        User.findOne({
-            _id: data.userId,
+        Sessions.findOne({
+            userId: data.userId,
             sessionId: data.sid,
             status: "Active"
         }).exec(function (err, found) {
             if (err) {
-                callback(err, null);
-            } else if (found) {
-                // console.log("found.balance;",found)
+                console.log('error');
                 var responseData = {}
-                responseData.status = "OK";
-                responseData.balance = found.balance;
-                responseData.uuid = data.uuid;
+                responseData.status = "INVALID_PARAMETER";
                 callback(null, responseData);
+            } else if (found) {
+                User.findOne({
+                    _id: data.userId,
+                }).exec(function (err, foundUser) {
+                    if (err) {
+                        var responseData = {}
+                        responseData.status = "INVALID_PARAMETER";
+                        callback(null, responseData);
+                    } else if (foundUser) {
+                        // console.log("found.balance;",found)
+                        var responseData = {}
+                        responseData.status = "OK";
+                        responseData.balance = foundUser.balance;
+                        responseData.uuid = data.uuid;
+                        callback(null, responseData);
+                    } else {
+                        var responseData = {}
+                        responseData.status = "INVALID_SID";
+                        callback(null, responseData);
+                    }
+                });
             } else {
                 var responseData = {}
                 responseData.status = "INVALID_SID";
                 callback(null, responseData);
             }
-        });
+        })
+
+
     },
     checksession: function (data, callback) {
         User.findOne({
@@ -245,7 +264,7 @@ var model = {
                 callback(err, null);
             } else if (found) {
                 console.log("found");
-                found.sessionId=uuidv1();
+                found.sessionId = uuidv1();
                 found.save(function (err, savedData) {
                     if (err) {
                         console.log("error occured");
@@ -258,8 +277,7 @@ var model = {
                         callback(null, responseData);
                     }
                 });
-            }
-            else{
+            } else {
                 var responseData = {}
                 responseData.status = "INVALID_SID";
                 callback(null, responseData);
@@ -275,8 +293,8 @@ var model = {
                 callback(err, null);
             } else if (found) {
                 console.log(found);
-                found.sessionId=uuidv1();
-                found.status="Active"
+                found.sessionId = uuidv1();
+                found.status = "Active"
                 found.save(function (err, savedData) {
                     if (err) {
                         console.log("error occured");
@@ -289,8 +307,7 @@ var model = {
                         callback(null, responseData);
                     }
                 });
-            }
-            else{
+            } else {
                 var responseData = {}
                 responseData.status = "INVALID_USERID";
                 callback(null, responseData);
