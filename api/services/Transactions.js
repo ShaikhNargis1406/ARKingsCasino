@@ -95,7 +95,7 @@ var model = {
             if (err) {
                 console.log(err);
                 var responseData = {}
-                responseData.status = err;
+                responseData.status = 'INVALID_PARAMETER';
                 callback(null, responseData);
             } else {
                 var responseData = {}
@@ -169,7 +169,7 @@ var model = {
 
             if (err) {
                 var responseData = {}
-                responseData.status = err;
+                responseData.status = 'INVALID_PARAMETER';
                 callback(null, responseData);
             } else {
                 var responseData = {}
@@ -243,7 +243,7 @@ var model = {
 
                 if (err) {
                     var responseData = {}
-                    responseData.status = err;
+                    responseData.status = 'INVALID_PARAMETER';
                     callback(null, responseData);
                 } else {
                     var responseData = {}
