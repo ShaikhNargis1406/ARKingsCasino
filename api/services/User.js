@@ -214,14 +214,13 @@ var model = {
      */
     balanceWallet: function (data, callback) {
         Sessions.findOne({
-            userId: data.userId,
             sessionId: data.sid,
             status: "Active"
         }).exec(function (err, found) {
             if (err) {
                 console.log('error');
                 var responseData = {}
-                responseData.status = "INVALID_PARAMETER";
+                responseData.status = "INVALID_SID";
                 callback(null, responseData);
             } else if (found) {
                 User.findOne({
@@ -240,7 +239,7 @@ var model = {
                         callback(null, responseData);
                     } else {
                         var responseData = {}
-                        responseData.status = "INVALID_SID";
+                        responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
                     }
                 });

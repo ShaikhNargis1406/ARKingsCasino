@@ -94,9 +94,7 @@ var model = {
                         }
                     });
                 } else {
-                    var responseData = {}
-                    responseData.status = 'INSUFFICIENT_FUNDS';
-                    callback('err', responseData);
+                    callback('err', balance);
                 }
 
             }
@@ -117,16 +115,19 @@ var model = {
         async.waterfall([
             function (callback) {
                 Sessions.findOne({
-                    userId: data.userId,
                     sessionId: data.sid,
                     status: "Active"
                 }).exec(function (err, found) {
                     if (err) {
-                        callback(err, null);
+                        var responseData = {}
+                        responseData.status = 'INVALID_SID';
+                        callback(err, responseData);
                     } else if (found) {
                         callback(null, 'found');
                     } else {
-                        callback(null, null);
+                        var responseData = {}
+                        responseData.status = 'INVALID_SID';
+                        callback('INVALID_SID', responseData);
                     }
                 });
 
@@ -138,13 +139,16 @@ var model = {
                         _id: data.userId
                     }).exec(function (err, found) {
                         if (err) {
-                            callback(err, null);
+                            var responseData = {}
+                            responseData.status = 'INVALID_PARAMETER';
+                            callback(err, responseData);
                         } else if (found) {
                             found.balance = found.balance + Number(data.transaction.amount)
                             found.save(function (err, data) {
                                 if (err) {
-                                    console.log("error occured");
-                                    callback(err, null);
+                                    var responseData = {}
+                                    responseData.status = 'UNKNOWN_ERROR';
+                                    callback(err, responseData);
                                 } else {
                                     console.log("balance updated");
                                     callback(null, found.balance);
@@ -153,31 +157,30 @@ var model = {
                         }
                     });
                 } else {
-                    console.log('inside not found')
-                    callback("INVALID_SID", 'token');
+                    var responseData = {}
+                    responseData.status = 'INVALID_SID';
+                    callback('INVALID_SID', responseData);
                 }
             },
             function (balance, callback) {
-                if (balance != 'token') {
+                if (!isNaN(balance)) {
                     console.log('inside balance')
                     Transactions.saveData(data, function (err, savedData) {
                         if (err) {
-                            console.log("error occured");
-                            callback(err, null);
+                            var responseData = {}
+                            responseData.status = 'UNKNOWN_ERROR';
+                            callback(err, responseData);
                         } else if (savedData) {
                             callback(null, balance);
                         }
                     });
                 } else {
-                    callback("INVALID_SID", null);
+                    callback("INVALID_SID", balance);
                 }
             }
         ], function (err, result) {
-
             if (err) {
-                var responseData = {}
-                responseData.status = 'INVALID_PARAMETER';
-                callback(null, responseData);
+                callback(null, result);
             } else {
                 var responseData = {}
                 responseData.status = "OK";
@@ -191,16 +194,19 @@ var model = {
         async.waterfall([
                 function (callback) {
                     Sessions.findOne({
-                        userId: data.userId,
                         sessionId: data.sid,
                         status: "Active"
                     }).exec(function (err, found) {
                         if (err) {
-                            callback(err, null);
+                            var responseData = {}
+                            responseData.status = 'INVALID_SID';
+                            callback(err, responseData);
                         } else if (found) {
                             callback(null, 'found');
                         } else {
-                            callback(null, null);
+                            var responseData = {}
+                            responseData.status = 'INVALID_SID';
+                            callback(err, responseData);
                         }
                     });
                 },
@@ -210,13 +216,17 @@ var model = {
                             _id: data.userId
                         }).exec(function (err, found) {
                             if (err) {
-                                callback(err, null);
+                                var responseData = {}
+                                responseData.status = 'INVALID_PARAMETER';
+                                callback(err, responseData);
                             } else if (found) {
                                 found.balance = found.balance + Number(data.transaction.amount)
                                 found.save(function (err, data) {
                                     if (err) {
                                         console.log("error occured");
-                                        callback(err, null);
+                                        var responseData = {}
+                                        responseData.status = 'UNKNOWN_ERROR';
+                                        callback(err, responseData);
                                     } else {
                                         console.log("balance updated");
                                         callback(null, found.balance);
@@ -225,31 +235,30 @@ var model = {
                             }
                         });
                     } else {
-                        console.log('inside not found')
-                        callback("INVALID_SID", 'token');
+                        var responseData = {}
+                        responseData.status = 'INVALID_SID';
+                        callback('INVALID_SID', responseData);
                     }
                 },
                 function (balance, callback) {
-                    if (balance != 'token') {
+                    if (!isNaN(balance)) {
                         Transactions.saveData(data, function (err, savedData) {
                             if (err) {
-                                console.log("error occured");
-                                callback(err, null);
+                                var responseData = {}
+                                responseData.status = 'UNKNOWN_ERROR';
+                                callback(err, responseData);
                             } else if (savedData) {
                                 callback(null, balance);
                             }
                         });
                     } else {
-                        callback("INVALID_SID", null);
+                        callback("INVALID_SID", balance);
                     }
                 }
             ],
             function (err, result) {
-
                 if (err) {
-                    var responseData = {}
-                    responseData.status = 'INVALID_PARAMETER';
-                    callback(null, responseData);
+                    callback(null, result);
                 } else {
                     var responseData = {}
                     responseData.status = "OK";
