@@ -19,7 +19,6 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             "country": "HK",
             "language": "hk",
             "currency": "HKD",
-            "sessionId": "f8fd5a30-3e4c-11e8-9b71-6727715ece53",
             "game": "roulette"
         }
         $scope.template = TemplateService.getHTML("content/home.html");
@@ -28,26 +27,29 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         userData.uuid = '5ac6004c1a0a';
         NavigationService.apiCallWithData("Transactions/sid?authToken=stage1234", userData, function (data) {
             console.log('data---->>>>>', data);
-            NavigationService.apiCallWithData("User/createEntry", formData, function (data) {
-                if (data.errors) {
-                    console.log("error--", data)
-                    $scope.entry = "/entry?params=c2l0ZT1fX2RlZmF1bHRfXwpnYW1lPWhvbGRlbQpBVVRIX1RPS0VOPTNlYmQ5NWY1NWEwOTQyNmRiYmFjOTcxNmNiNzEwMWE0MGMzYTlhMjA&JSESSIONID=3ebd95f55a09426dbbac9716cb7101a40c3a9a20"
-                    EvolutionGaming.loadGame({
-                        url: "https://kingscasino.uat1.evo-test.com" + $scope.entry, // url part returned by User  Authentification in entry or entryEmbedded parameters
-                        offset: 0 // Optional. Default: 0. Need to be added if licensee has some buttons
+            if (data.sid) {
+                formData.sessionId = data.sid;
+                NavigationService.apiCallWithData("User/createEntry", formData, function (data) {
+                    if (data.errors) {
+                        console.log("error--", data)
+                        $scope.entry = "/entry?params=c2l0ZT1fX2RlZmF1bHRfXwpnYW1lPWhvbGRlbQpBVVRIX1RPS0VOPTNlYmQ5NWY1NWEwOTQyNmRiYmFjOTcxNmNiNzEwMWE0MGMzYTlhMjA&JSESSIONID=3ebd95f55a09426dbbac9716cb7101a40c3a9a20"
+                        EvolutionGaming.loadGame({
+                            url: "https://kingscasino.uat1.evo-test.com" + $scope.entry, // url part returned by User  Authentification in entry or entryEmbedded parameters
+                            offset: 0 // Optional. Default: 0. Need to be added if licensee has some buttons
 
-                    });
+                        });
 
-                } else {
-                    $scope.entry = data.entry;
-                    EvolutionGaming.loadGame({
-                        url: "https://kingscasino.uat1.evo-test.com" + $scope.entry, // url part returned by User  Authentification in entry or entryEmbedded parameters
-                        offset: 0 // Optional. Default: 0. Need to be added if licensee has some buttons
+                    } else {
+                        $scope.entry = data.entry;
+                        EvolutionGaming.loadGame({
+                            url: "https://kingscasino.uat1.evo-test.com" + $scope.entry, // url part returned by User  Authentification in entry or entryEmbedded parameters
+                            offset: 0 // Optional. Default: 0. Need to be added if licensee has some buttons
 
-                    });
-                }
+                        });
+                    }
 
-            });
+                });
+            }
         });
     })
 
