@@ -26,7 +26,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         var userData = {};
         userData.userId = '5ac6004c1a0af615256f7b1f';
         userData.uuid = '5ac6004c1a0a';
-        NavigationService.apiCallWithData("Transactions/sid", userData, function (data) {
+        NavigationService.apiCallWithData("Transactions/sid?authToken=stage1234", userData, function (data) {
             console.log('data---->>>>>', data);
             NavigationService.apiCallWithData("User/createEntry", formData, function (data) {
                 if (data.errors) {
