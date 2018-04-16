@@ -36,13 +36,13 @@ var model = {
                     json: true
                 }, function (error, response, body) {
                     if (error) {
-                        console.log("error found",error)
-                        
+                        console.log("error found", error)
+
                         var responseData = {}
                         responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
                     } else {
-                        console.log("data found",body.data.balance)
+                        console.log("data found", body.data.balance)
                         var responseData = {}
                         responseData.status = "OK";
                         responseData.balance = body.data.balance;
@@ -69,15 +69,15 @@ var model = {
                 responseData.status = "INVALID_USERID";
                 callback(null, responseData);
             } else if (found) {
-                console.log("found");
-                Sessions.checkUser(data,function(err,userData){
-                    if(err){
+                console.log("found", found);
+                Sessions.checkUser(data, function (err, userData) {
+                    if (err) {
                         console.log("user does not exist");
                         var responseData = {}
                         responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
-                    }else{
-                        console.log("user",userData);
+                    } else {
+                        console.log("user", userData);
                         found.sessionId = uuidv1();
                         found.save(function (err, savedData) {
                             if (err) {
@@ -95,15 +95,15 @@ var model = {
                     }
                 });
             } else {
-                console.log(data);
-                Sessions.checkUser(data,function(err,userData){
-                    if(err){
+                console.log("data in else ", data);
+                Sessions.checkUser(data, function (err, userData) {
+                    if (err) {
                         console.log("user does not exist");
                         var responseData = {}
                         responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
-                    }else{
-                        console.log("user",userData);
+                    } else {
+                        console.log("user", userData);
                         data.userId = data.userId
                         data.sessionId = uuidv1();
                         data.status = "Active"
@@ -117,12 +117,13 @@ var model = {
                                 var responseData = {}
                                 responseData.status = "OK";
                                 responseData.sid = savedData.sessionId;
+                                console.log("responseData", responseData);
                                 callback(null, responseData);
                             }
                         });
                     }
                 });
-             }
+            }
         })
     },
     checksession: function (data, callback) {
@@ -137,14 +138,14 @@ var model = {
                 callback(null, responseData);
             } else if (found) {
                 console.log("found");
-                Sessions.checkUser(data,function(err,userData){
-                    if(err){
+                Sessions.checkUser(data, function (err, userData) {
+                    if (err) {
                         console.log("user does not exist");
                         var responseData = {}
                         responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
-                    }else{
-                        console.log("user",userData);
+                    } else {
+                        console.log("user", userData);
                         found.sessionId = uuidv1();
                         found.save(function (err, savedData) {
                             if (err) {
@@ -229,14 +230,14 @@ var model = {
         }, function (error, response, body) {
             if (error) {
                 callback(error, null);
-            } else if(body.data._id) {
+            } else if (body.data._id) {
                 console.log("body", body.data);
                 var responseData = {}
                 responseData.status = "OK";
                 callback(null, responseData);
-            }else{
+            } else {
                 console.log("empty");
-                callback("empty", null); 
+                callback("empty", null);
             }
         });
     }
