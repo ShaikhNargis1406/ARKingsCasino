@@ -13,9 +13,9 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         var formData = {
             "_id": "5ac34a40f18b0e72339c5ae0",
             "update": true,
-            "firstName": "Harsh",
-            "lastName": "Chheda",
-            "nickname": "Harsh",
+            "firstName": "Niya",
+            "lastName": "SK",
+            "nickname": "SN",
             "country": "HK",
             "language": "hk",
             "currency": "HKD",
