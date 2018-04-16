@@ -26,7 +26,7 @@ module.exports = {
     authToken: "stage1234",
     evoURL: "https://kingscasino.uat1.evo-test.com/ua/v1/kingscasino00001/test123",
     mainServer: "http://kingplay.online/api/",
-    port: 1337,
-    realHost: "http://localhost:1337",
+    port: 82,
+    realHost: "http://ar.wohlig.co.in",
     emails: ["chintan@wohlig.com", "jagruti@wohlig.com", "tushar@wohlig.com", "chirag@wohlig.com", "harsh@wohlig.com", "sohan@wohlig.com"]
 };
