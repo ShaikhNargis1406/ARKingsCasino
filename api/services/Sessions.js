@@ -1,3 +1,4 @@
+var request = require('request');
 const uuidv1 = require('uuid/v1');
 var schema = new Schema({
     userId: String,
@@ -16,7 +17,7 @@ module.exports = mongoose.model('Sessions', schema);
 
 var exports = _.cloneDeep(require("sails-wohlig-service")(schema, "sessions", "sessions"));
 var model = {
-    checksession: function (data, callback) {
+    balanceWallet: function (data, callback) {
         Sessions.findOne({
             sessionId: data.sid,
             status: "Active"
@@ -27,34 +28,25 @@ var model = {
                 responseData.status = "INVALID_SID";
                 callback(null, responseData);
             } else if (found) {
-                console.log("found");
-                User.findOne({
-                    _id: data.userId,
-                }).exec(function (err, foundUser) {
-                    if (err) {
+                var userData = {};
+                userData.id = data.userId;
+                request.post({
+                    url: global["env"].mainServer + 'AR/getCurrentBalance',
+                    body: userData,
+                    json: true
+                }, function (error, response, body) {
+                    if (error) {
+                        console.log("error found",error)
+                        
                         var responseData = {}
                         responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
-                    } else if (foundUser) {
-                        // console.log("found.balance;",found)
-                        found.sessionId = uuidv1();
-                        found.save(function (err, savedData) {
-                            if (err) {
-                                console.log("error occured");
-                                var responseData = {}
-                                responseData.status = "UNKNOWN_ERROR";
-                                callback(null, responseData);
-                            } else {
-                                var responseData = {}
-                                responseData.status = "OK";
-                                responseData.sid = savedData.sessionId;
-                                responseData.uuid = data.uuid;
-                                callback(null, responseData);
-                            }
-                        });
                     } else {
+                        console.log("data found",body.data.balance)
                         var responseData = {}
-                        responseData.status = "INVALID_PARAMETER";
+                        responseData.status = "OK";
+                        responseData.balance = body.data.balance;
+                        responseData.uuid = data.uuid;
                         callback(null, responseData);
                     }
                 });
@@ -64,6 +56,8 @@ var model = {
                 callback(null, responseData);
             }
         })
+
+
     },
     createLoginSid: function (data, callback) {
         Sessions.findOne({
@@ -76,16 +70,132 @@ var model = {
                 callback(null, responseData);
             } else if (found) {
                 console.log("found");
-                User.findOne({
-                    _id: data.userId,
-                }).exec(function (err, foundUser) {
-                    if (err) {
+                Sessions.checkUser(data,function(err,userData){
+                    if(err){
+                        console.log("user does not exist");
                         var responseData = {}
                         responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
-                    } else if (foundUser) {
-                        // console.log("found.balance;",found)
+                    }else{
+                        console.log("user",userData);
                         found.sessionId = uuidv1();
+                        found.save(function (err, savedData) {
+                            if (err) {
+                                console.log("error occured");
+                                var responseData = {}
+                                responseData.status = "UNKNOWN_ERROR";
+                                callback(null, responseData);
+                            } else {
+                                var responseData = {}
+                                responseData.status = "OK";
+                                responseData.sid = savedData.sessionId;
+                                callback(null, responseData);
+                            }
+                        });
+                    }
+                });
+            } else {
+                console.log(data);
+                Sessions.checkUser(data,function(err,userData){
+                    if(err){
+                        console.log("user does not exist");
+                        var responseData = {}
+                        responseData.status = "INVALID_PARAMETER";
+                        callback(null, responseData);
+                    }else{
+                        console.log("user",userData);
+                        data.userId = data.userId
+                        data.sessionId = uuidv1();
+                        data.status = "Active"
+                        Sessions.saveData(data, function (err, savedData) {
+                            if (err) {
+                                console.log("error occured");
+                                var responseData = {}
+                                responseData.status = "UNKNOWN_ERROR";
+                                callback(null, responseData);
+                            } else {
+                                var responseData = {}
+                                responseData.status = "OK";
+                                responseData.sid = savedData.sessionId;
+                                callback(null, responseData);
+                            }
+                        });
+                    }
+                });
+             }
+        })
+    },
+    checksession: function (data, callback) {
+        Sessions.findOne({
+            sessionId: data.sid,
+            status: "Active"
+        }).exec(function (err, found) {
+            if (err) {
+                console.log('error');
+                var responseData = {}
+                responseData.status = "INVALID_SID";
+                callback(null, responseData);
+            } else if (found) {
+                console.log("found");
+                Sessions.checkUser(data,function(err,userData){
+                    if(err){
+                        console.log("user does not exist");
+                        var responseData = {}
+                        responseData.status = "INVALID_PARAMETER";
+                        callback(null, responseData);
+                    }else{
+                        console.log("user",userData);
+                        found.sessionId = uuidv1();
+                        found.save(function (err, savedData) {
+                            if (err) {
+                                console.log("error occured");
+                                var responseData = {}
+                                responseData.status = "UNKNOWN_ERROR";
+                                callback(null, responseData);
+                            } else {
+                                var responseData = {}
+                                responseData.status = "OK";
+                                responseData.sid = savedData.sessionId;
+                                responseData.uuid = data.uuid;
+                                callback(null, responseData);
+                            }
+                        });
+                    }
+                });
+            } else {
+                var responseData = {}
+                responseData.status = "INVALID_SID";
+                callback(null, responseData);
+            }
+        })
+    },
+
+    createSid: function (data, callback) {
+        var userData = {};
+        userData.accessToken = data.userId;
+        request.post({
+            url: global["env"].mainServer + 'member/getAccessLevel',
+            body: userData,
+            json: true
+        }, function (error, response, body) {
+            if (error) {
+                var responseData = {}
+                responseData.status = "INVALID_PARAMETER";
+                callback(null, responseData);
+            } else {
+                console.log("body", body);
+                Sessions.findOne({
+                    userId: data.userId
+                }).exec(function (err, found) {
+                    if (err) {
+                        console.log("error occured");
+                        var responseData = {}
+                        responseData.status = "INVALID_USERID";
+                        callback(null, responseData);
+                    } else if (found) {
+                        console.log(found);
+                        found.sessionId = uuidv1();
+                        found.status = "Active"
                         found.save(function (err, savedData) {
                             if (err) {
                                 console.log("error occured");
@@ -102,81 +212,33 @@ var model = {
                         });
                     } else {
                         var responseData = {}
-                        responseData.status = "INVALID_PARAMETER";
+                        responseData.status = "INVALID_USERID";
                         callback(null, responseData);
                     }
-                });
-            } else {
-                console.log(data);
-                User.findOne({
-                    _id: data.userId,
-                }).exec(function (err, foundUser) {
-                    if (err) {
-                        var responseData = {}
-                        responseData.status = "INVALID_PARAMETER";
-                        callback(null, responseData);
-                    } else if (foundUser) {
-                        // console.log("found.balance;",found)
-                        data.userId = data.userId
-                        data.sessionId = uuidv1();
-                        data.status = "Active"
-                        Sessions.saveData(data, function (err, savedData) {
-                            if (err) {
-                                console.log("error occured");
-                                var responseData = {}
-                                responseData.status = "INVALID_PARAMETER";
-                                callback(null, responseData);
-                            } else {
-                                var responseData = {}
-                                responseData.status = "OK";
-                                responseData.sid = savedData.sessionId;
-                                callback(null, responseData);
-                            }
-                        });
-                    } else {
-                        var responseData = {}
-                        responseData.status = "INVALID_PARAMETER";
-                        callback(null, responseData);
-                    }
-                });
-
+                })
             }
-        })
-
+        });
     },
-    createSid: function (data, callback) {
-        Sessions.findOne({
-            userId: data.userId
-        }).exec(function (err, found) {
-            if (err) {
-                console.log("error occured");
+    checkUser: function (data, callback) {
+        var userData = {};
+        userData._id = data.userId;
+        request.post({
+            url: global["env"].mainServer + 'member/getOne',
+            body: userData,
+            json: true
+        }, function (error, response, body) {
+            if (error) {
+                callback(error, null);
+            } else if(body.data._id) {
+                console.log("body", body.data);
                 var responseData = {}
-                responseData.status = "INVALID_USERID";
+                responseData.status = "OK";
                 callback(null, responseData);
-            } else if (found) {
-                console.log(found);
-                found.sessionId = uuidv1();
-                found.status = "Active"
-                found.save(function (err, savedData) {
-                    if (err) {
-                        console.log("error occured");
-                        var responseData = {}
-                        responseData.status = "UNKNOWN_ERROR";
-                        callback(null, responseData);
-                    } else {
-                        var responseData = {}
-                        responseData.status = "OK";
-                        responseData.sid = savedData.sessionId;
-                        responseData.uuid = data.uuid;
-                        callback(null, responseData);
-                    }
-                });
-            } else {
-                var responseData = {}
-                responseData.status = "INVALID_USERID";
-                callback(null, responseData);
+            }else{
+                console.log("empty");
+                callback("empty", null); 
             }
-        })
+        });
     }
 
 };

@@ -9,8 +9,12 @@ var schema = new Schema({
     },
     game: {},
     transaction: {
-        id: String,
+        id: {
+            type: String,
+            unique: true
+        },
         refId: String,
+
         amount: String,
     },
 });
@@ -49,31 +53,17 @@ var model = {
                     }
                 });
             },
-            function (arg1, callback) {
-                if (arg1 == 'found') {
-                    User.findOne({
-                        _id: data.userId
-                    }).exec(function (err, found) {
+            function (arg, callback) {
+                if (arg == 'found') {
+                    Sessions.checkUser(data, function (err, userData) {
                         if (err) {
+                            console.log("user does not exist");
                             var responseData = {}
-                            responseData.status = 'INVALID_PARAMETER';
-                            callback(err, responseData);
-                        } else if (found && found.balance >= Number(data.transaction.amount)) {
-                            found.balance = found.balance - Number(data.transaction.amount)
-                            found.save(function (err, data) {
-                                if (err) {
-                                    var responseData = {}
-                                    responseData.status = 'UNKNOWN_ERROR';
-                                    callback(err, responseData);
-                                } else {
-                                    console.log("balance updated");
-                                    callback(null, Number(found.balance));
-                                }
-                            });
+                            responseData.status = "INVALID_PARAMETER";
+                            callback(null, responseData);
                         } else {
-                            var responseData = {}
-                            responseData.status = 'INSUFFICIENT_FUNDS';
-                            callback('INSUFFICIENT_FUNDS', responseData);
+                            console.log("user", userData);
+                            callback(null, 'found');
                         }
                     });
                 } else {
@@ -82,32 +72,62 @@ var model = {
                     callback('INVALID_SID', responseData);
                 }
             },
-            function (balance, callback) {
-                if (!isNaN(balance)) {
+            function (arg, callback) {
+                if (arg == 'found') {
                     Transactions.saveData(data, function (err, savedData) {
                         if (err) {
                             var responseData = {}
-                            responseData.status = 'UNKNOWN_ERROR';
+                            if (err.toString().includes('transaction')) {
+                                responseData.status = 'BET_ALREADY_EXIS';
+                                console.log("err----- in saving transaction", err.toString().includes('transaction'));
+                            } else
+                                responseData.status = 'UNKNOWN_ERROR';
                             callback(err, responseData);
                         } else if (savedData) {
-                            callback(null, balance);
+                            callback(null, "saved");
                         }
                     });
                 } else {
-                    callback('err', balance);
+                    var responseData = {}
+                    responseData.status = 'INVALID_PARAMETER';
+                    callback('INVALID_PARAMETER', responseData);
                 }
-
+            },
+            function (arg1, callback) {
+                data.api = 'loseMoney';
+                data.amount = data.transaction.amount;
+                data.subGame = data.game.type;
+                Transactions.winLooseApi(data, function (err, userData) {
+                    if (err) {
+                        console.log("winLooseApi", err);
+                        var responseData = {}
+                        responseData.status = "INVALID_PARAMETER";
+                        callback("error", responseData);
+                    } else {
+                        console.log("user", userData);
+                        callback(null, userData);
+                    }
+                });
+            },
+            function (balance, callback) {
+                Sessions.balanceWallet(data, function (err, userData) {
+                    if (err) {
+                        console.log("balanceWallet", err);
+                        var responseData = {}
+                        responseData.status = "INVALID_PARAMETER";
+                        callback(null, responseData);
+                    } else {
+                        console.log("user", userData);
+                        callback(null, userData);
+                    }
+                });
             }
         ], function (err, result) {
             if (err) {
-                console.log(err);
+                // console.log(err);
                 callback(null, result);
             } else {
-                var responseData = {}
-                responseData.status = "OK";
-                responseData.balance = result;
-                responseData.uuid = data.uuid;
-                callback(null, responseData);
+                callback(null, result);
             }
         });
     },
@@ -132,28 +152,17 @@ var model = {
                 });
 
             },
-            function (arg1, callback) {
-                if (arg1 == 'found') {
-                    console.log('inside found')
-                    User.findOne({
-                        _id: data.userId
-                    }).exec(function (err, found) {
+            function (arg, callback) {
+                if (arg == 'found') {
+                    Sessions.checkUser(data, function (err, userData) {
                         if (err) {
+                            console.log("user does not exist");
                             var responseData = {}
-                            responseData.status = 'INVALID_PARAMETER';
-                            callback(err, responseData);
-                        } else if (found) {
-                            found.balance = found.balance + Number(data.transaction.amount)
-                            found.save(function (err, data) {
-                                if (err) {
-                                    var responseData = {}
-                                    responseData.status = 'UNKNOWN_ERROR';
-                                    callback(err, responseData);
-                                } else {
-                                    console.log("balance updated");
-                                    callback(null, found.balance);
-                                }
-                            });
+                            responseData.status = "INVALID_PARAMETER";
+                            callback(null, responseData);
+                        } else {
+                            console.log("user", userData);
+                            callback(null, 'found');
                         }
                     });
                 } else {
@@ -162,31 +171,63 @@ var model = {
                     callback('INVALID_SID', responseData);
                 }
             },
-            function (balance, callback) {
-                if (!isNaN(balance)) {
-                    console.log('inside balance')
+            function (arg, callback) {
+                if (arg == 'found') {
                     Transactions.saveData(data, function (err, savedData) {
                         if (err) {
                             var responseData = {}
-                            responseData.status = 'UNKNOWN_ERROR';
+                            if (err.toString().includes('transaction')) {
+                                responseData.status = ' BET_ALREADY_SETTLED';
+                                console.log("err----- in saving transaction", err.toString().includes('transaction'));
+                            } else
+                                responseData.status = 'UNKNOWN_ERROR';
                             callback(err, responseData);
                         } else if (savedData) {
-                            callback(null, balance);
+                            callback(null, "saved");
                         }
                     });
                 } else {
-                    callback("INVALID_SID", balance);
+                    var responseData = {}
+                    responseData.status = 'INVALID_PARAMETER';
+                    callback('INVALID_PARAMETER', responseData);
                 }
+            },
+            function (arg1, callback) {
+                data.api = 'winMoney';
+                data.amount = data.transaction.amount;
+                data.subGame = data.game.type;
+                Transactions.winLooseApi(data, function (err, userData) {
+                    if (err) {
+                        console.log("user does not exist");
+                        var responseData = {}
+                        responseData.status = "INVALID_PARAMETER";
+                        callback(null, responseData);
+                    } else {
+                        console.log("user", userData);
+                        callback(null, userData);
+                    }
+                });
+            },
+            function (balance, callback) {
+                console.log('inside balance')
+                Sessions.balanceWallet(data, function (err, userData) {
+                    if (err) {
+                        console.log("user does not exist");
+                        var responseData = {}
+                        responseData.status = "INVALID_PARAMETER";
+                        callback(null, responseData);
+                    } else {
+                        console.log("user", userData);
+                        callback(null, userData);
+                    }
+                });
             }
         ], function (err, result) {
             if (err) {
                 callback(null, result);
             } else {
-                var responseData = {}
-                responseData.status = "OK";
-                responseData.balance = result;
-                responseData.uuid = data.uuid;
-                callback(null, responseData);
+
+                callback(null, result);
             }
         });
     },
@@ -210,28 +251,17 @@ var model = {
                         }
                     });
                 },
-                function (arg1, callback) {
-                    if (arg1 == 'found') {
-                        User.findOne({
-                            _id: data.userId
-                        }).exec(function (err, found) {
+                function (arg, callback) {
+                    if (arg == 'found') {
+                        Sessions.checkUser(data, function (err, userData) {
                             if (err) {
+                                console.log("user does not exist");
                                 var responseData = {}
-                                responseData.status = 'INVALID_PARAMETER';
-                                callback(err, responseData);
-                            } else if (found) {
-                                found.balance = found.balance + Number(data.transaction.amount)
-                                found.save(function (err, data) {
-                                    if (err) {
-                                        console.log("error occured");
-                                        var responseData = {}
-                                        responseData.status = 'UNKNOWN_ERROR';
-                                        callback(err, responseData);
-                                    } else {
-                                        console.log("balance updated");
-                                        callback(null, found.balance);
-                                    }
-                                });
+                                responseData.status = "INVALID_PARAMETER";
+                                callback(null, responseData);
+                            } else {
+                                // console.log("user", userData);
+                                callback(null, 'found');
                             }
                         });
                     } else {
@@ -240,33 +270,87 @@ var model = {
                         callback('INVALID_SID', responseData);
                     }
                 },
-                function (balance, callback) {
-                    if (!isNaN(balance)) {
+                function (arg, callback) {
+                    if (arg == 'found') {
                         Transactions.saveData(data, function (err, savedData) {
                             if (err) {
                                 var responseData = {}
-                                responseData.status = 'UNKNOWN_ERROR';
+                                if (err.toString().includes('transaction')) {
+                                    responseData.status = ' BET_ALREADY_SETTLED';
+                                    console.log("err----- in saving transaction", err.toString().includes('transaction'));
+                                } else
+                                    responseData.status = 'UNKNOWN_ERROR';
                                 callback(err, responseData);
                             } else if (savedData) {
-                                callback(null, balance);
+                                callback(null, "saved");
                             }
                         });
                     } else {
-                        callback("INVALID_SID", balance);
+                        var responseData = {}
+                        responseData.status = 'INVALID_PARAMETER';
+                        callback('INVALID_PARAMETER', responseData);
                     }
+                },
+                function (arg1, callback) {
+                    data.api = 'winMoney'
+                    Transactions.winLooseApi(data, function (err, userData) {
+                        if (err) {
+                            console.log("user does not exist");
+                            var responseData = {}
+                            responseData.status = "INVALID_PARAMETER";
+                            callback(null, responseData);
+                        } else {
+                            console.log("user", userData);
+                            callback(null, userData);
+                        }
+                    });
+                },
+                function (balance, callback) {
+                    Sessions.balanceWallet(data, function (err, userData) {
+                        if (err) {
+                            console.log("user does not exist");
+                            var responseData = {}
+                            responseData.status = "INVALID_PARAMETER";
+                            callback(null, responseData);
+                        } else {
+                            console.log("user", userData);
+                            callback(null, userData);
+                        }
+                    });
                 }
             ],
             function (err, result) {
                 if (err) {
                     callback(null, result);
                 } else {
-                    var responseData = {}
-                    responseData.status = "OK";
-                    responseData.balance = result;
-                    responseData.uuid = data.uuid;
-                    callback(null, responseData);
+                    callback(null, result);
                 }
             });
+    },
+    winLooseApi: function (data, callback) {
+        var transData = {};
+        transData.amount = data.transaction.amount;
+        transData.subGame = data.game.type;
+        transData.id = data.userId;
+        console.log("transData", transData);
+
+        request.post({
+            url: global["env"].mainServer + 'AR/' + data.api,
+            body: transData,
+            json: true
+        }, function (error, response, body) {
+            if (error) {
+                callback(error, null);
+            } else if (body.data && body.data.transactionData) {
+                console.log("body", body.data);
+                var responseData = {}
+                responseData.status = "OK";
+                callback(null, responseData);
+            } else {
+                console.log("empty", body);
+                callback("empty", null);
+            }
+        });
     }
 
 
