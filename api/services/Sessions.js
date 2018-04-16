@@ -42,15 +42,16 @@ var model = {
                         responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
                     } else {
-                        console.log("data found", body.data.balance)
+                        console.log("data found", body.data.balance.toFixed(2))
                         var responseData = {}
                         responseData.status = "OK";
-                        responseData.balance = body.data.balance;
+                        responseData.balance = body.data.balance.toFixed(2);
                         responseData.uuid = data.uuid;
                         callback(null, responseData);
                     }
                 });
             } else {
+                console.log('inside else');
                 var responseData = {}
                 responseData.status = "INVALID_SID";
                 callback(null, responseData);
