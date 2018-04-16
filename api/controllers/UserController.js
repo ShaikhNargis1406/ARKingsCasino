@@ -104,17 +104,18 @@ var controller = {
         Config.sendEmail("chintan@wohlig.com", "jagruti@wohlig.com", "first email from endgrid", "", "<html><body>dome content</body></html>");
     },
     createEntry: function (req, res) {
+        console.log('inside createEntry', req.body);
         var data = {
-            "uuid":uuidv1(),
+            "uuid": uuidv1(),
             "player": {
-                "id": req.body._id,
+                "id": req.body.userId,
                 "update": true,
-                "firstName": req.body.firstName,
-                "lastName": req.body.lastName,
+                "firstName": 'Kings',
+                "lastName": 'Play',
                 "nickname": req.body.nickname,
-                "country": req.body.country,
-                "language": req.body.language,
-                "currency": req.body.currency,
+                "country": 'IN',
+                "language": 'en',
+                "currency": 'HKD',
                 "session": {
                     "id": req.body.sessionId,
                     "ip": "103.216.164.118"
@@ -134,21 +135,20 @@ var controller = {
                     "mobile": false
                 },
                 "urls": {
-                    "cashier": "http://www.chs.ee",
                     "responsibleGaming": "http://www.RGam.ee",
-                    "lobby": "http://www.lobb.ee",
+                    "lobby": "http://localhost:8100/#/lobby",
                     "sessionTimeout": "http://www.sesstm.ee"
                 }
             }
         }
-        console.log("data",data)
+        console.log("data", data)
         if (req.body) {
             request.post({
                 url: global["env"].evoURL,
                 body: data,
                 json: true
-              }, function(error, response, body){
-                console.log(error,body);
+            }, function (error, response, body) {
+                console.log(error, body);
                 res.callback(error, body);
             });
 

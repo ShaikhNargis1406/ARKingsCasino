@@ -78,7 +78,7 @@ var model = {
                         if (err) {
                             var responseData = {}
                             if (err.toString().includes('transaction')) {
-                                responseData.status = 'BET_ALREADY_EXIS';
+                                responseData.status = 'BET_ALREADY_EXIST';
                                 console.log("err----- in saving transaction", err.toString().includes('transaction'));
                             } else
                                 responseData.status = 'UNKNOWN_ERROR';

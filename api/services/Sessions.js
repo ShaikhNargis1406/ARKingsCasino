@@ -213,9 +213,25 @@ var model = {
                             }
                         });
                     } else {
-                        var responseData = {}
-                        responseData.status = "INVALID_USERID";
-                        callback(null, responseData);
+
+                        data.userId = data.userId
+                        data.sessionId = uuidv1();
+                        data.status = "Active"
+                        Sessions.saveData(data, function (err, savedData) {
+                            if (err) {
+                                console.log("error occured");
+                                var responseData = {}
+                                responseData.status = "UNKNOWN_ERROR";
+                                callback(null, responseData);
+                            } else {
+                                var responseData = {}
+                                responseData.status = "OK";
+                                responseData.sid = savedData.sessionId;
+                                responseData.uuid = data.uuid;
+                                console.log("responseData", responseData);
+                                callback(null, responseData);
+                            }
+                        });
                     }
                 })
             }

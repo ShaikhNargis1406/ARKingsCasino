@@ -3,7 +3,7 @@ var request = require('request');
 
 var controller = {
     check: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId && req.query.authToken == global["env"].authToken) {
             Sessions.checksession(req.body, res.callback);
         } else {
             var responseData = {}
@@ -12,7 +12,7 @@ var controller = {
         }
     },
     sid: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId && req.query.authToken == global["env"].authToken) {
             Sessions.createSid(req.body, res.callback);
         } else {
             var responseData = {}
@@ -20,9 +20,9 @@ var controller = {
             res.callback(null, responseData);
         }
     },
-  
+
     balance: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId && req.query.authToken == global["env"].authToken) {
             Sessions.balanceWallet(req.body, res.callback);
         } else {
             var responseData = {}
@@ -31,7 +31,7 @@ var controller = {
         }
     },
     debit: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId && req.query.authToken == global["env"].authToken) {
             Transactions.debitWallet(req.body, res.callback);
         } else {
             var responseData = {}
@@ -40,7 +40,7 @@ var controller = {
         }
     },
     credit: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId && req.query.authToken == global["env"].authToken) {
             Transactions.creditWallet(req.body, res.callback);
         } else {
             var responseData = {}
@@ -49,7 +49,7 @@ var controller = {
         }
     },
     cancel: function (req, res) {
-        if (req.body && req.body.userId && req.query.authToken==global["env"].authToken) {
+        if (req.body && req.body.userId && req.query.authToken == global["env"].authToken) {
             Transactions.cancelWallet(req.body, res.callback);
         } else {
             var responseData = {}
