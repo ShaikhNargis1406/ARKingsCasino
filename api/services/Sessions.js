@@ -35,14 +35,13 @@ var model = {
                     body: userData,
                     json: true
                 }, function (error, response, body) {
-                    if (error) {
+                    if (error || body.error) {
                         console.log("error found", error)
-
                         var responseData = {}
                         responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
                     } else {
-                        console.log("data found", body.data.balance.toFixed(2))
+                        console.log("data found", body.data)
                         var responseData = {}
                         responseData.status = "OK";
                         responseData.balance = body.data.balance.toFixed(2);
