@@ -22,7 +22,7 @@ var model = {
             sessionId: data.sid,
             status: "Active"
         }).exec(function (err, found) {
-            if (err) {
+            if (err || _.isEmpty(found)) {
                 console.log('error');
                 var responseData = {}
                 responseData.status = "INVALID_SID";
@@ -256,6 +256,28 @@ var model = {
                 callback("empty", null);
             }
         });
+    },
+    sessionExists: function (data, callback) {
+        Sessions.findOne({
+            sessionId: data.sid,
+            status: "Active"
+        }).exec(function (err, found) {
+            if (err || _.isEmpty(found)) {
+                console.log('error');
+                var responseData = {}
+                responseData.status = "INVALID_SID";
+                callback(null, responseData);
+            } else if (found) {
+                var responseData = {}
+                responseData.status = "OK";
+                callback(null, responseData);
+            } else {
+                console.log('inside else');
+                var responseData = {}
+                responseData.status = "INVALID_SID";
+                callback(null, responseData);
+            }
+        })
     }
 
 };

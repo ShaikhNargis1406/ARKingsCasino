@@ -10,13 +10,19 @@ var schema = new Schema({
     game: {},
     transaction: {
         id: {
-            type: String,
-            unique: true
+            type: String
         },
         refId: String,
 
         amount: String,
     },
+    type: String
+});
+schema.index({
+    type: 1,
+    "transaction.id": 1
+}, {
+    unique: true
 });
 
 schema.plugin(deepPopulate, {
@@ -36,25 +42,11 @@ var model = {
     debitWallet: function (data, callback) {
         async.waterfall([
             function (callback) {
-                Sessions.findOne({
-                    sessionId: data.sid,
-                    status: "Active"
-                }).exec(function (err, found) {
-                    if (err) {
-                        var responseData = {}
-                        responseData.status = 'INVALID_SID';
-                        callback(err, responseData);
-                    } else if (found) {
-                        callback(null, 'found');
-                    } else {
-                        var responseData = {}
-                        responseData.status = 'INVALID_SID';
-                        callback("INVALID_SID", responseData);
-                    }
-                });
+                Sessions.sessionExists(data, callback);
             },
             function (arg, callback) {
-                if (arg == 'found') {
+                console.log("arg-----", arg);
+                if (arg.status == 'OK') {
                     Sessions.checkUser(data, function (err, userData) {
                         if (err) {
                             console.log("user does not exist");
@@ -74,14 +66,33 @@ var model = {
             },
             function (arg, callback) {
                 if (arg == 'found') {
+                    Transactions.txExists(data, function (err, txData) {
+                        if (err) {
+                            console.log("Transactions does not exist");
+                            var responseData = {}
+                            responseData.status = 'UNKNOWN_ERROR';
+                            callback(err, responseData);
+                        } else {
+                            console.log("Transactions", txData);
+                            if (_.isEmpty(txData))
+                                callback(null, 'notFound');
+                            else
+                                callback(null, 'found');
+                        }
+                    });
+                } else {
+                    var responseData = {}
+                    responseData.status = 'INVALID_PARAMETER';
+                    callback('INVALID_PARAMETER', responseData);
+                }
+            },
+            function (arg, callback) {
+                if (arg == 'notFound') {
+                    data.type = "debit";
                     Transactions.saveData(data, function (err, savedData) {
                         if (err) {
                             var responseData = {}
-                            if (err.toString().includes('transaction')) {
-                                responseData.status = 'BET_ALREADY_EXIST';
-                                console.log("err----- in saving transaction", err.toString().includes('transaction'));
-                            } else
-                                responseData.status = 'UNKNOWN_ERROR';
+                            responseData.status = 'UNKNOWN_ERROR';
                             callback(err, responseData);
                         } else if (savedData) {
                             callback(null, "saved");
@@ -89,8 +100,8 @@ var model = {
                     });
                 } else {
                     var responseData = {}
-                    responseData.status = 'INVALID_PARAMETER';
-                    callback('INVALID_PARAMETER', responseData);
+                    responseData.status = 'BET_ALREADY_EXIST';
+                    callback('BET_ALREADY_EXIST', responseData);
                 }
             },
             function (arg1, callback) {
@@ -134,26 +145,10 @@ var model = {
     creditWallet: function (data, callback) {
         async.waterfall([
             function (callback) {
-                Sessions.findOne({
-                    sessionId: data.sid,
-                    status: "Active"
-                }).exec(function (err, found) {
-                    if (err) {
-                        var responseData = {}
-                        responseData.status = 'INVALID_SID';
-                        callback(err, responseData);
-                    } else if (found) {
-                        callback(null, 'found');
-                    } else {
-                        var responseData = {}
-                        responseData.status = 'INVALID_SID';
-                        callback('INVALID_SID', responseData);
-                    }
-                });
-
+                Sessions.sessionExists(data, callback);
             },
             function (arg, callback) {
-                if (arg == 'found') {
+                if (arg.status == 'OK') {
                     Sessions.checkUser(data, function (err, userData) {
                         if (err) {
                             console.log("user does not exist");
@@ -173,14 +168,33 @@ var model = {
             },
             function (arg, callback) {
                 if (arg == 'found') {
+                    Transactions.txExists(data, function (err, txData) {
+                        if (err) {
+                            console.log("Transactions does not exist");
+                            var responseData = {}
+                            responseData.status = 'UNKNOWN_ERROR';
+                            callback(err, responseData);
+                        } else {
+                            console.log("Transactions", txData);
+                            if (_.isEmpty(txData))
+                                callback(null, 'notFound');
+                            else
+                                callback(null, 'found');
+                        }
+                    });
+                } else {
+                    var responseData = {}
+                    responseData.status = 'INVALID_PARAMETER';
+                    callback('INVALID_PARAMETER', responseData);
+                }
+            },
+            function (arg, callback) {
+                if (arg == 'notFound') {
+                    data.type = "credit";
                     Transactions.saveData(data, function (err, savedData) {
                         if (err) {
                             var responseData = {}
-                            if (err.toString().includes('transaction')) {
-                                responseData.status = ' BET_ALREADY_SETTLED';
-                                console.log("err----- in saving transaction", err.toString().includes('transaction'));
-                            } else
-                                responseData.status = 'UNKNOWN_ERROR';
+                            responseData.status = 'UNKNOWN_ERROR';
                             callback(err, responseData);
                         } else if (savedData) {
                             callback(null, "saved");
@@ -188,8 +202,8 @@ var model = {
                     });
                 } else {
                     var responseData = {}
-                    responseData.status = 'INVALID_PARAMETER';
-                    callback('INVALID_PARAMETER', responseData);
+                    responseData.status = 'BET_ALREADY_SETTLED';
+                    callback('BET_ALREADY_SETTLED', responseData);
                 }
             },
             function (arg1, callback) {
@@ -234,25 +248,10 @@ var model = {
     cancelWallet: function (data, callback) {
         async.waterfall([
                 function (callback) {
-                    Sessions.findOne({
-                        sessionId: data.sid,
-                        status: "Active"
-                    }).exec(function (err, found) {
-                        if (err) {
-                            var responseData = {}
-                            responseData.status = 'INVALID_SID';
-                            callback(err, responseData);
-                        } else if (found) {
-                            callback(null, 'found');
-                        } else {
-                            var responseData = {}
-                            responseData.status = 'INVALID_SID';
-                            callback(err, responseData);
-                        }
-                    });
+                    Sessions.sessionExists(data, callback);
                 },
                 function (arg, callback) {
-                    if (arg == 'found') {
+                    if (arg.status == 'OK') {
                         Sessions.checkUser(data, function (err, userData) {
                             if (err) {
                                 console.log("user does not exist");
@@ -272,9 +271,33 @@ var model = {
                 },
                 function (arg, callback) {
                     if (arg == 'found') {
+                        Transactions.txExists(data, function (err, txData) {
+                            if (err) {
+                                console.log("Transactions does not exist");
+                                var responseData = {}
+                                responseData.status = 'UNKNOWN_ERROR';
+                                callback(err, responseData);
+                            } else {
+                                console.log("Transactions", txData);
+                                if (!_.isEmpty(txData) && txData.type == 'debit')
+                                    callback(null, 'found');
+                                else
+                                    callback(null, 'notFound');
+                            }
+                        });
+                    } else {
+                        var responseData = {}
+                        responseData.status = 'INVALID_PARAMETER';
+                        callback('INVALID_PARAMETER', responseData);
+                    }
+                },
+                function (arg, callback) {
+                    if (arg == 'found') {
+                        data.type = "cancel";
                         Transactions.saveData(data, function (err, savedData) {
                             if (err) {
                                 var responseData = {}
+                                console.log('err-->>>>>>>>>>>>>', err);
                                 if (err.toString().includes('transaction')) {
                                     responseData.status = ' BET_ALREADY_SETTLED';
                                     console.log("err----- in saving transaction", err.toString().includes('transaction'));
@@ -287,8 +310,8 @@ var model = {
                         });
                     } else {
                         var responseData = {}
-                        responseData.status = 'INVALID_PARAMETER';
-                        callback('INVALID_PARAMETER', responseData);
+                        responseData.status = 'BET_DOES_NOT_EXIST';
+                        callback('BET_DOES_NOT_EXIST', responseData);
                     }
                 },
                 function (arg1, callback) {
@@ -351,6 +374,22 @@ var model = {
                 callback("empty", null);
             }
         });
+    },
+    txExists: function (data, callback) {
+        Transactions.findOne({
+            "transaction.id": data.transaction.id
+        }).exec(function (err, found) {
+            if (err) {
+                console.log('error');
+                callback(err, {});
+            } else if (found) {
+                callback(null, found);
+            } else {
+                console.log('inside else');
+                console.log('error');
+                callback(null, {});
+            }
+        })
     }
 
 

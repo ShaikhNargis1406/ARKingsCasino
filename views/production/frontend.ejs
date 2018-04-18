@@ -13,6 +13,16 @@
     <meta name="robots" content="noindex">
     <meta name="googlebot" content="noindex">
     <link rel="shortcut icon" href="img/favicon.ico" />
+    <script src="lib/sails/sails.io.js"></script>
+    <script>
+        var adminUUU = "<%= ((typeof adminUUU) == "
+        undefined ") ? "
+        " : adminUUU  %>";
+        var adminurl = "<%= ((typeof adminurl) == "
+        undefined ") ? "
+        " : adminurl  %>";
+        io.sails.url = adminUUU;
+    </script>
 
     <title ng-bind="'Node Framework | '+template.title"></title>
 
