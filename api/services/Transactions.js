@@ -190,6 +190,29 @@ var model = {
             },
             function (arg, callback) {
                 if (arg == 'notFound') {
+                    Transactions.findOne({
+                        "transaction.refId": data.transaction.refId,
+                        type: 'debit'
+                    }).exec(function (err, found) {
+                        if (err) {
+                            var responseData = {}
+                            responseData.status = 'UNKNOWN_ERROR';
+                            callback(err, responseData);
+                        } else {
+                            if (_.isEmpty(found))
+                                callback(null, 'notFound');
+                            else
+                                callback(null, 'found');
+                        }
+                    });
+                } else {
+                    var responseData = {}
+                    responseData.status = 'BET_ALREADY_SETTLED';
+                    callback('BET_ALREADY_SETTLED', responseData);
+                }
+            },
+            function (arg, callback) {
+                if (arg == 'found') {
                     data.type = "credit";
                     Transactions.saveData(data, function (err, savedData) {
                         if (err) {
@@ -202,8 +225,8 @@ var model = {
                     });
                 } else {
                     var responseData = {}
-                    responseData.status = 'BET_ALREADY_SETTLED';
-                    callback('BET_ALREADY_SETTLED', responseData);
+                    responseData.status = 'BET_DOES_NOT_EXIST';
+                    callback('BET_DOES_NOT_EXIST', responseData);
                 }
             },
             function (arg1, callback) {
@@ -217,7 +240,7 @@ var model = {
                         responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
                     } else {
-                        console.log("user", userData);
+                        // console.log("user", userData);
                         callback(null, userData);
                     }
                 });
@@ -231,7 +254,7 @@ var model = {
                         responseData.status = "INVALID_PARAMETER";
                         callback(null, responseData);
                     } else {
-                        console.log("user", userData);
+                        // console.log("user", userData);
                         callback(null, userData);
                     }
                 });
@@ -298,8 +321,8 @@ var model = {
                             if (err) {
                                 var responseData = {}
                                 console.log('err-->>>>>>>>>>>>>', err);
-                                if (err.toString().includes('transaction')) {
-                                    responseData.status = ' BET_ALREADY_SETTLED';
+                                if (err.toString().includes('ValidationError')) {
+                                    responseData.status = 'BET_ALREADY_SETTLED';
                                     console.log("err----- in saving transaction", err.toString().includes('transaction'));
                                 } else
                                     responseData.status = 'UNKNOWN_ERROR';
@@ -386,10 +409,9 @@ var model = {
                 callback(null, found);
             } else {
                 console.log('inside else');
-                console.log('error');
                 callback(null, {});
             }
-        })
+        });
     }
 
 
