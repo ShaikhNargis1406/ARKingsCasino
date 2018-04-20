@@ -132,12 +132,7 @@ var controller = {
                 },
                 "channel": {
                     "wrapped": false,
-                    "mobile": false
-                },
-                "urls": {
-                    "responsibleGaming": "http://www.RGam.ee",
-                    "lobby": "http://localhost:8100/#/lobby",
-                    "sessionTimeout": "http://www.sesstm.ee"
+                    "mobile": true
                 }
             }
         }
