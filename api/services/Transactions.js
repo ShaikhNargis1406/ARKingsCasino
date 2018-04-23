@@ -392,6 +392,7 @@ var model = {
                 var responseData = {}
                 responseData.status = "OK";
                 callback(null, responseData);
+                Transactions.balanceSocket(transData, callback);
             } else {
                 console.log("empty", body);
                 callback("empty", null);
@@ -412,6 +413,31 @@ var model = {
                 callback(null, {});
             }
         });
+    },
+    balanceSocket: function (transData, callback) {
+        console.log("inside balanceSocket transData.id", transData.id);
+        request.post({
+            url: global["env"].mainServer + 'AR/getCurrentBalance',
+            body: transData,
+            json: true
+        }, function (error, response, body) {
+            if (error || body.error) {
+                console.log("error found", error)
+                var responseData = {}
+                responseData.status = "INVALID_PARAMETER";
+                callback(null, responseData);
+            } else {
+                console.log("data found", body.data)
+                var responseData = {}
+                responseData.status = "OK";
+                responseData.balance = body.data.balance.toFixed(2);
+                sails.sockets.blast('balanceSocket' + transData.id, {
+                    balance: body.data.balance.toFixed(2)
+                });
+                callback(null, responseData);
+            }
+        });
+
     }
 
 
