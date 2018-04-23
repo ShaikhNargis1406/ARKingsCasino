@@ -392,7 +392,7 @@ var model = {
                 var responseData = {}
                 responseData.status = "OK";
                 callback(null, responseData);
-                Transactions.balanceSocket(transData, callback);
+                Transactions.balanceSocket(transData);
             } else {
                 console.log("empty", body);
                 callback("empty", null);
@@ -414,7 +414,7 @@ var model = {
             }
         });
     },
-    balanceSocket: function (transData, callback) {
+    balanceSocket: function (transData) {
         console.log("inside balanceSocket transData.id", transData.id);
         request.post({
             url: global["env"].mainServer + 'AR/getCurrentBalance',
@@ -434,7 +434,7 @@ var model = {
                 sails.sockets.blast('balanceSocket' + transData.id, {
                     balance: body.data.balance.toFixed(2)
                 });
-                callback(null, responseData);
+                // callback(null, responseData);
             }
         });
 
