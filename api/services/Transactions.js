@@ -144,27 +144,27 @@ var model = {
     },
     creditWallet: function (data, callback) {
         async.waterfall([
+            // function (callback) {
+            //     Sessions.sessionExists(data, callback);
+            // },
             function (callback) {
-                Sessions.sessionExists(data, callback);
-            },
-            function (arg, callback) {
-                if (arg.status == 'OK') {
-                    Sessions.checkUser(data, function (err, userData) {
-                        if (err) {
-                            console.log("user does not exist");
-                            var responseData = {}
-                            responseData.status = "INVALID_PARAMETER";
-                            callback(null, responseData);
-                        } else {
-                            console.log("user", userData);
-                            callback(null, 'found');
-                        }
-                    });
-                } else {
-                    var responseData = {}
-                    responseData.status = 'INVALID_SID';
-                    callback('INVALID_SID', responseData);
-                }
+                // if (arg.status == 'OK') {
+                Sessions.checkUser(data, function (err, userData) {
+                    if (err) {
+                        console.log("user does not exist");
+                        var responseData = {}
+                        responseData.status = "INVALID_PARAMETER";
+                        callback(null, responseData);
+                    } else {
+                        console.log("user", userData);
+                        callback(null, 'found');
+                    }
+                });
+                // } else {
+                //     var responseData = {}
+                //     responseData.status = 'INVALID_SID';
+                //     callback('INVALID_SID', responseData);
+                // }
             },
             function (arg, callback) {
                 if (arg == 'found') {
