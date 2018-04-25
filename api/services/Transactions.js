@@ -143,6 +143,7 @@ var model = {
         });
     },
     creditWallet: function (data, callback) {
+        console.log("creditWallet----", data);
         async.waterfall([
             // function (callback) {
             //     Sessions.sessionExists(data, callback);
