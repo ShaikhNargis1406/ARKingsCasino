@@ -107,6 +107,7 @@ var model = {
         })
     },
     checksession: function (data, callback) {
+        console.log("inside checksession ", data);
         Sessions.findOne({
             sessionId: data.sid,
             status: "Active"
