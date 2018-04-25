@@ -121,7 +121,7 @@ var model = {
                 console.log("found");
                 var responseData = {}
                 responseData.status = "OK";
-                responseData.sid = savedData.sessionId;
+                responseData.sid = found.sessionId;
                 responseData.uuid = data.uuid;
                 callback(null, responseData);
                 // Sessions.checkUser(data, function (err, userData) {
