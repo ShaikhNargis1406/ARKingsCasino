@@ -70,30 +70,10 @@ var model = {
                 callback(null, responseData);
             } else if (found) {
                 console.log("found", found);
-                Sessions.checkUser(data, function (err, userData) {
-                    if (err) {
-                        console.log("user does not exist");
-                        var responseData = {}
-                        responseData.status = "INVALID_PARAMETER";
-                        callback(null, responseData);
-                    } else {
-                        console.log("user", userData);
-                        found.sessionId = uuidv1();
-                        found.save(function (err, savedData) {
-                            if (err) {
-                                console.log("error occured");
-                                var responseData = {}
-                                responseData.status = "UNKNOWN_ERROR";
-                                callback(null, responseData);
-                            } else {
-                                var responseData = {}
-                                responseData.status = "OK";
-                                responseData.sid = savedData.sessionId;
-                                callback(null, responseData);
-                            }
-                        });
-                    }
-                });
+                var responseData = {}
+                responseData.status = "OK";
+                responseData.sid = found.sessionId;
+                callback(null, responseData);
             } else {
                 console.log("data in else ", data);
                 Sessions.checkUser(data, function (err, userData) {
