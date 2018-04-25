@@ -57,12 +57,12 @@ var controller = {
             res.callback(null, responseData);
         }
     },
-    // redirectSocket: function (req, res) {
-    //     console.log("req.query.token", req.query.token);
-    //     sails.sockets.blast('redirectPlayer' + req.query.token, {
-    //         msg: 'redirect'
-    //     });
-    //     res.callback(null, 'redirectingPlayer');
-    // }
+    redirectSocket: function (req, res) {
+        console.log("req.query.token", req.query.token);
+        sails.sockets.blast('redirectPlayer', {
+            msg: 'redirect'
+        });
+        res.callback(null, 'redirectingPlayer');
+    }
 };
 module.exports = _.assign(module.exports, controller);
