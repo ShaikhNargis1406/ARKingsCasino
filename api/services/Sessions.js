@@ -20,6 +20,7 @@ var model = {
     balanceWallet: function (data, callback) {
         Sessions.findOne({
             sessionId: data.sid,
+            userId: data.userId,
             status: "Active"
         }).exec(function (err, found) {
             if (err || _.isEmpty(found)) {
@@ -110,6 +111,7 @@ var model = {
         console.log("inside checksession ", data);
         Sessions.findOne({
             sessionId: data.sid,
+            userId: data.userId,
             status: "Active"
         }).exec(function (err, found) {
             if (err) {
@@ -246,6 +248,7 @@ var model = {
     sessionExists: function (data, callback) {
         Sessions.findOne({
             sessionId: data.sid,
+            userId: data.userId,
             status: "Active"
         }).exec(function (err, found) {
             if (err || _.isEmpty(found)) {
