@@ -20,7 +20,6 @@ var model = {
     balanceWallet: function (data, callback) {
         Sessions.findOne({
             sessionId: data.sid,
-            userId: data.userId,
             status: "Active"
         }).exec(function (err, found) {
             if (err || _.isEmpty(found)) {
@@ -111,7 +110,6 @@ var model = {
         console.log("inside checksession ", data);
         Sessions.findOne({
             sessionId: data.sid,
-            userId: data.userId,
             status: "Active"
         }).exec(function (err, found) {
             if (err) {
@@ -121,11 +119,19 @@ var model = {
                 callback(null, responseData);
             } else if (found) {
                 console.log("found");
-                var responseData = {}
-                responseData.status = "OK";
-                responseData.sid = found.sessionId;
-                responseData.uuid = data.uuid;
-                callback(null, responseData);
+                if (found.userId == data.userId) {
+                    var responseData = {}
+                    responseData.status = "OK";
+                    responseData.sid = found.sessionId;
+                    responseData.uuid = data.uuid;
+                    callback(null, responseData);
+                } else {
+                    console.log("user does not exist");
+                    var responseData = {}
+                    responseData.status = "INVALID_PARAMETER";
+                    callback(null, responseData);
+                }
+
                 // Sessions.checkUser(data, function (err, userData) {
                 //     if (err) {
                 //         console.log("user does not exist");
@@ -248,7 +254,6 @@ var model = {
     sessionExists: function (data, callback) {
         Sessions.findOne({
             sessionId: data.sid,
-            userId: data.userId,
             status: "Active"
         }).exec(function (err, found) {
             if (err || _.isEmpty(found)) {
@@ -257,9 +262,17 @@ var model = {
                 responseData.status = "INVALID_SID";
                 callback(null, responseData);
             } else if (found) {
-                var responseData = {}
-                responseData.status = "OK";
-                callback(null, responseData);
+                if (found.userId == data.userId) {
+                    var responseData = {}
+                    responseData.status = "OK";
+                    callback(null, responseData);
+                } else {
+                    console.log("user does not exist");
+                    var responseData = {}
+                    responseData.status = "INVALID_PARAMETER";
+                    callback(null, responseData);
+                }
+
             } else {
                 console.log('inside else');
                 var responseData = {}
