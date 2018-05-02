@@ -146,80 +146,79 @@ var model = {
                             console.log("user does not exist");
                             var responseData = {}
                             responseData.status = "INVALID_PARAMETER";
-                            callback(null, responseData);
+                            callback(err, responseData);
                         } else {
                             console.log("user", userData);
                             callback(null, 'found');
                         }
                     });
                 } else {
-                    var responseData = {}
-                    responseData.status = 'INVALID_SID';
-                    callback('INVALID_SID', responseData);
+                    // var responseData = {}
+                    // responseData.status = 'INVALID_SID';
+                    callback('error', arg);
                 }
             },
             function (arg, callback) {
-                if (arg == 'found') {
-                    Transactions.txExists(data, function (err, txData) {
-                        if (err) {
-                            console.log("Transactions does not exist");
+                // if (arg == 'found') {
+                Transactions.txExists(data, function (err, txData) {
+                    if (err) {
+                        console.log("Transactions does not exist");
+                        var responseData = {}
+                        responseData.status = 'UNKNOWN_ERROR';
+                        callback(err, responseData);
+                    } else {
+                        console.log("Transactions", txData);
+                        if (_.isEmpty(txData))
+                            callback(null, 'notFound');
+                        else {
                             var responseData = {}
-                            responseData.status = 'UNKNOWN_ERROR';
-                            callback(err, responseData);
-                        } else {
-                            console.log("Transactions", txData);
-                            if (_.isEmpty(txData))
-                                callback(null, 'notFound');
-                            else
-                                callback(null, 'found');
+                            responseData.status = 'BET_ALREADY_SETTLED';
+                            callback('BET_ALREADY_SETTLED', responseData);
                         }
-                    });
-                } else {
-                    var responseData = {}
-                    responseData.status = 'INVALID_PARAMETER';
-                    callback('INVALID_PARAMETER', responseData);
-                }
+                    }
+                });
+                // } else {
+                //     var responseData = {}
+                //     responseData.status = 'INVALID_PARAMETER';
+                //     callback('INVALID_PARAMETER', responseData);
+                // }
             },
             function (arg, callback) {
-                if (arg == 'notFound') {
-                    Transactions.findOne({
-                        "transaction.refId": data.transaction.refId,
-                        type: 'debit'
-                    }).exec(function (err, found) {
-                        if (err) {
+                Transactions.findOne({
+                    "transaction.refId": data.transaction.refId,
+                    type: 'debit'
+                }).exec(function (err, found) {
+                    if (err) {
+                        var responseData = {}
+                        responseData.status = 'UNKNOWN_ERROR';
+                        callback(err, responseData);
+                    } else {
+                        if (_.isEmpty(found)) {
                             var responseData = {}
-                            responseData.status = 'UNKNOWN_ERROR';
-                            callback(err, responseData);
-                        } else {
-                            if (_.isEmpty(found))
-                                callback(null, 'notFound');
-                            else
-                                callback(null, 'found');
-                        }
-                    });
-                } else {
-                    var responseData = {}
-                    responseData.status = 'BET_ALREADY_SETTLED';
-                    callback('BET_ALREADY_SETTLED', responseData);
-                }
+                            responseData.status = 'BET_DOES_NOT_EXIST';
+                            callback('BET_DOES_NOT_EXIST', responseData);
+                        } else
+                            callback(null, 'found');
+                    }
+                });
             },
             function (arg, callback) {
-                if (arg == 'found') {
-                    data.type = "credit";
-                    Transactions.saveData(data, function (err, savedData) {
-                        if (err) {
-                            var responseData = {}
-                            responseData.status = 'UNKNOWN_ERROR';
-                            callback(err, responseData);
-                        } else if (savedData) {
-                            callback(null, "saved");
-                        }
-                    });
-                } else {
-                    var responseData = {}
-                    responseData.status = 'BET_DOES_NOT_EXIST';
-                    callback('BET_DOES_NOT_EXIST', responseData);
-                }
+                // if (arg == 'found') {
+                data.type = "credit";
+                Transactions.saveData(data, function (err, savedData) {
+                    if (err) {
+                        var responseData = {}
+                        responseData.status = 'UNKNOWN_ERROR';
+                        callback(err, responseData);
+                    } else if (savedData) {
+                        callback(null, "saved");
+                    }
+                });
+                // } else {
+                //     var responseData = {}
+                //     responseData.status = 'BET_DOES_NOT_EXIST';
+                //     callback('BET_DOES_NOT_EXIST', responseData);
+                // }
             },
             function (arg1, callback) {
                 data.api = 'winMoney';
@@ -279,55 +278,46 @@ var model = {
                             }
                         });
                     } else {
-                        var responseData = {}
-                        responseData.status = 'INVALID_SID';
-                        callback('INVALID_SID', responseData);
+                        // var responseData = {}
+                        // responseData.status = 'INVALID_SID';
+                        callback('error', arg);
                     }
                 },
                 function (arg, callback) {
-                    if (arg == 'found') {
-                        Transactions.txExists(data, function (err, txData) {
-                            if (err) {
-                                console.log("Transactions does not exist");
+                    Transactions.txExists(data, function (err, txData) {
+                        if (err) {
+                            console.log("Transactions does not exist");
+                            var responseData = {}
+                            responseData.status = 'UNKNOWN_ERROR';
+                            callback(err, responseData);
+                        } else {
+                            console.log("Transactions", txData);
+                            if (!_.isEmpty(txData) && txData.type == 'debit')
+                                callback(null, 'found');
+                            else {
                                 var responseData = {}
+                                responseData.status = 'BET_DOES_NOT_EXIST';
+                                callback('BET_DOES_NOT_EXIST', responseData);
+                            }
+                        }
+                    });
+                },
+                function (arg, callback) {
+                    data.type = "cancel";
+                    Transactions.saveData(data, function (err, savedData) {
+                        if (err) {
+                            var responseData = {}
+                            console.log('err-->>>>>>>>>>>>>', err);
+                            if (err.toString().includes('ValidationError')) {
+                                responseData.status = 'BET_ALREADY_SETTLED';
+                                console.log("err----- in saving transaction", err.toString().includes('transaction'));
+                            } else
                                 responseData.status = 'UNKNOWN_ERROR';
-                                callback(err, responseData);
-                            } else {
-                                console.log("Transactions", txData);
-                                if (!_.isEmpty(txData) && txData.type == 'debit')
-                                    callback(null, 'found');
-                                else
-                                    callback(null, 'notFound');
-                            }
-                        });
-                    } else {
-                        var responseData = {}
-                        responseData.status = 'INVALID_PARAMETER';
-                        callback('INVALID_PARAMETER', responseData);
-                    }
-                },
-                function (arg, callback) {
-                    if (arg == 'found') {
-                        data.type = "cancel";
-                        Transactions.saveData(data, function (err, savedData) {
-                            if (err) {
-                                var responseData = {}
-                                console.log('err-->>>>>>>>>>>>>', err);
-                                if (err.toString().includes('ValidationError')) {
-                                    responseData.status = 'BET_ALREADY_SETTLED';
-                                    console.log("err----- in saving transaction", err.toString().includes('transaction'));
-                                } else
-                                    responseData.status = 'UNKNOWN_ERROR';
-                                callback(err, responseData);
-                            } else if (savedData) {
-                                callback(null, "saved");
-                            }
-                        });
-                    } else {
-                        var responseData = {}
-                        responseData.status = 'BET_DOES_NOT_EXIST';
-                        callback('BET_DOES_NOT_EXIST', responseData);
-                    }
+                            callback(err, responseData);
+                        } else if (savedData) {
+                            callback(null, "saved");
+                        }
+                    });
                 },
                 function (arg1, callback) {
                     data.api = 'winMoney'
