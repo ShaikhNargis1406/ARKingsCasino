@@ -59,9 +59,9 @@ var model = {
                         }
                     });
                 } else {
-                    var responseData = {}
-                    responseData.status = 'INVALID_SID';
-                    callback('INVALID_SID', responseData);
+                    // var responseData = {}
+                    // responseData.status = 'INVALID_SID';
+                    callback('error', arg);
                 }
             },
             function (arg, callback) {
@@ -81,6 +81,7 @@ var model = {
                         }
                     });
                 } else {
+                    console.log("arg != 'found'", arg);
                     var responseData = {}
                     responseData.status = 'INVALID_PARAMETER';
                     callback('INVALID_PARAMETER', responseData);
