@@ -45,65 +45,55 @@ var model = {
                 Sessions.sessionExists(data, callback);
             },
             function (arg, callback) {
-                console.log("arg-----", arg);
                 if (arg.status == 'OK') {
                     Sessions.checkUser(data, function (err, userData) {
                         if (err) {
                             console.log("user does not exist");
                             var responseData = {}
                             responseData.status = "INVALID_PARAMETER";
-                            callback(null, responseData);
+                            callback(err, responseData);
                         } else {
                             console.log("user", userData);
                             callback(null, 'found');
                         }
                     });
                 } else {
+                    console.log("inside else");
                     // var responseData = {}
                     // responseData.status = 'INVALID_SID';
                     callback('error', arg);
                 }
             },
             function (arg, callback) {
-                if (arg == 'found') {
-                    Transactions.txExists(data, function (err, txData) {
-                        if (err) {
-                            console.log("Transactions does not exist");
+                Transactions.txExists(data, function (err, txData) {
+                    if (err) {
+                        console.log("Transactions does not exist");
+                        var responseData = {}
+                        responseData.status = 'UNKNOWN_ERROR';
+                        callback(err, responseData);
+                    } else {
+                        console.log("Transactions", txData);
+                        if (_.isEmpty(txData))
+                            callback(null, 'notFound');
+                        else {
                             var responseData = {}
-                            responseData.status = 'UNKNOWN_ERROR';
-                            callback(err, responseData);
-                        } else {
-                            console.log("Transactions", txData);
-                            if (_.isEmpty(txData))
-                                callback(null, 'notFound');
-                            else
-                                callback(null, 'found');
+                            responseData.status = 'BET_ALREADY_EXIST';
+                            callback('BET_ALREADY_EXIST', responseData);
                         }
-                    });
-                } else {
-                    console.log("arg != 'found'", arg);
-                    var responseData = {}
-                    responseData.status = 'INVALID_PARAMETER';
-                    callback('INVALID_PARAMETER', responseData);
-                }
+                    }
+                });
             },
             function (arg, callback) {
-                if (arg == 'notFound') {
-                    data.type = "debit";
-                    Transactions.saveData(data, function (err, savedData) {
-                        if (err) {
-                            var responseData = {}
-                            responseData.status = 'UNKNOWN_ERROR';
-                            callback(err, responseData);
-                        } else if (savedData) {
-                            callback(null, "saved");
-                        }
-                    });
-                } else {
-                    var responseData = {}
-                    responseData.status = 'BET_ALREADY_EXIST';
-                    callback('BET_ALREADY_EXIST', responseData);
-                }
+                data.type = "debit";
+                Transactions.saveData(data, function (err, savedData) {
+                    if (err) {
+                        var responseData = {}
+                        responseData.status = 'UNKNOWN_ERROR';
+                        callback(err, responseData);
+                    } else if (savedData) {
+                        callback(null, "saved");
+                    }
+                });
             },
             function (arg1, callback) {
                 data.api = 'loseMoney';
