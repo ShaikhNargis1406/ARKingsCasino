@@ -129,6 +129,7 @@ var model = {
                 // console.log(err);
                 callback(null, result);
             } else {
+                console.log("result--- debit", result);
                 callback(null, result);
             }
         });
@@ -254,7 +255,7 @@ var model = {
             if (err) {
                 callback(null, result);
             } else {
-
+                console.log("result--- credit", result);
                 callback(null, result);
             }
         });
