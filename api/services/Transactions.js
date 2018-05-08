@@ -44,17 +44,43 @@ var model = {
             function (callback) {
                 Sessions.sessionExists(data, callback);
             },
+            // function (arg, callback) {
+            //     if (arg.status == 'OK') {
+            //         Sessions.checkUser(data, function (err, userData) {
+            //             if (err) {
+            //                 console.log("user does not exist");
+            //                 var responseData = {}
+            //                 responseData.status = "INVALID_PARAMETER";
+            //                 callback(err, responseData);
+            //             } else {
+            //                 console.log("user", userData);
+            //                 callback(null, 'found');
+            //             }
+            //         });
+            //     } else {
+            //         console.log("inside else");
+            //         // var responseData = {}
+            //         // responseData.status = 'INVALID_SID';
+            //         callback('error', arg);
+            //     }
+            // },
             function (arg, callback) {
                 if (arg.status == 'OK') {
-                    Sessions.checkUser(data, function (err, userData) {
+                    Transactions.txExists(data, function (err, txData) {
                         if (err) {
-                            console.log("user does not exist");
+                            console.log("Transactions does not exist");
                             var responseData = {}
-                            responseData.status = "INVALID_PARAMETER";
+                            responseData.status = 'UNKNOWN_ERROR';
                             callback(err, responseData);
                         } else {
-                            console.log("user", userData);
-                            callback(null, 'found');
+                            console.log("Transactions", txData);
+                            if (_.isEmpty(txData))
+                                callback(null, 'notFound');
+                            else {
+                                var responseData = {}
+                                responseData.status = 'BET_ALREADY_EXIST';
+                                callback('BET_ALREADY_EXIST', responseData);
+                            }
                         }
                     });
                 } else {
@@ -63,25 +89,6 @@ var model = {
                     // responseData.status = 'INVALID_SID';
                     callback('error', arg);
                 }
-            },
-            function (arg, callback) {
-                Transactions.txExists(data, function (err, txData) {
-                    if (err) {
-                        console.log("Transactions does not exist");
-                        var responseData = {}
-                        responseData.status = 'UNKNOWN_ERROR';
-                        callback(err, responseData);
-                    } else {
-                        console.log("Transactions", txData);
-                        if (_.isEmpty(txData))
-                            callback(null, 'notFound');
-                        else {
-                            var responseData = {}
-                            responseData.status = 'BET_ALREADY_EXIST';
-                            callback('BET_ALREADY_EXIST', responseData);
-                        }
-                    }
-                });
             },
             function (arg, callback) {
                 data.type = "debit";
@@ -140,17 +147,42 @@ var model = {
             function (callback) {
                 Sessions.sessionExists(data, callback);
             },
+            // function (arg, callback) {
+            //     if (arg.status == 'OK') {
+            //         Sessions.checkUser(data, function (err, userData) {
+            //             if (err) {
+            //                 console.log("user does not exist");
+            //                 var responseData = {}
+            //                 responseData.status = "INVALID_PARAMETER";
+            //                 callback(err, responseData);
+            //             } else {
+            //                 console.log("user", userData);
+            //                 callback(null, 'found');
+            //             }
+            //         });
+            //     } else {
+            //         // var responseData = {}
+            //         // responseData.status = 'INVALID_SID';
+            //         callback('error', arg);
+            //     }
+            // },
             function (arg, callback) {
                 if (arg.status == 'OK') {
-                    Sessions.checkUser(data, function (err, userData) {
+                    Transactions.txExists(data, function (err, txData) {
                         if (err) {
-                            console.log("user does not exist");
+                            console.log("Transactions does not exist");
                             var responseData = {}
-                            responseData.status = "INVALID_PARAMETER";
+                            responseData.status = 'UNKNOWN_ERROR';
                             callback(err, responseData);
                         } else {
-                            console.log("user", userData);
-                            callback(null, 'found');
+                            console.log("Transactions", txData);
+                            if (_.isEmpty(txData))
+                                callback(null, 'notFound');
+                            else {
+                                var responseData = {}
+                                responseData.status = 'BET_ALREADY_SETTLED';
+                                callback('BET_ALREADY_SETTLED', responseData);
+                            }
                         }
                     });
                 } else {
@@ -158,31 +190,6 @@ var model = {
                     // responseData.status = 'INVALID_SID';
                     callback('error', arg);
                 }
-            },
-            function (arg, callback) {
-                // if (arg == 'found') {
-                Transactions.txExists(data, function (err, txData) {
-                    if (err) {
-                        console.log("Transactions does not exist");
-                        var responseData = {}
-                        responseData.status = 'UNKNOWN_ERROR';
-                        callback(err, responseData);
-                    } else {
-                        console.log("Transactions", txData);
-                        if (_.isEmpty(txData))
-                            callback(null, 'notFound');
-                        else {
-                            var responseData = {}
-                            responseData.status = 'BET_ALREADY_SETTLED';
-                            callback('BET_ALREADY_SETTLED', responseData);
-                        }
-                    }
-                });
-                // } else {
-                //     var responseData = {}
-                //     responseData.status = 'INVALID_PARAMETER';
-                //     callback('INVALID_PARAMETER', responseData);
-                // }
             },
             function (arg, callback) {
                 Transactions.findOne({
@@ -265,17 +272,42 @@ var model = {
                 function (callback) {
                     Sessions.sessionExists(data, callback);
                 },
+                // function (arg, callback) {
+                //     if (arg.status == 'OK') {
+                //         Sessions.checkUser(data, function (err, userData) {
+                //             if (err) {
+                //                 console.log("user does not exist");
+                //                 var responseData = {}
+                //                 responseData.status = "INVALID_PARAMETER";
+                //                 callback(null, responseData);
+                //             } else {
+                //                 // console.log("user", userData);
+                //                 callback(null, 'found');
+                //             }
+                //         });
+                //     } else {
+                //         // var responseData = {}
+                //         // responseData.status = 'INVALID_SID';
+                //         callback('error', arg);
+                //     }
+                // },
                 function (arg, callback) {
                     if (arg.status == 'OK') {
-                        Sessions.checkUser(data, function (err, userData) {
+                        Transactions.txExists(data, function (err, txData) {
                             if (err) {
-                                console.log("user does not exist");
+                                console.log("Transactions does not exist");
                                 var responseData = {}
-                                responseData.status = "INVALID_PARAMETER";
-                                callback(null, responseData);
+                                responseData.status = 'UNKNOWN_ERROR';
+                                callback(err, responseData);
                             } else {
-                                // console.log("user", userData);
-                                callback(null, 'found');
+                                console.log("Transactions", txData);
+                                if (!_.isEmpty(txData) && txData.type == 'debit')
+                                    callback(null, 'found');
+                                else {
+                                    var responseData = {}
+                                    responseData.status = 'BET_DOES_NOT_EXIST';
+                                    callback('BET_DOES_NOT_EXIST', responseData);
+                                }
                             }
                         });
                     } else {
@@ -283,25 +315,6 @@ var model = {
                         // responseData.status = 'INVALID_SID';
                         callback('error', arg);
                     }
-                },
-                function (arg, callback) {
-                    Transactions.txExists(data, function (err, txData) {
-                        if (err) {
-                            console.log("Transactions does not exist");
-                            var responseData = {}
-                            responseData.status = 'UNKNOWN_ERROR';
-                            callback(err, responseData);
-                        } else {
-                            console.log("Transactions", txData);
-                            if (!_.isEmpty(txData) && txData.type == 'debit')
-                                callback(null, 'found');
-                            else {
-                                var responseData = {}
-                                responseData.status = 'BET_DOES_NOT_EXIST';
-                                callback('BET_DOES_NOT_EXIST', responseData);
-                            }
-                        }
-                    });
                 },
                 function (arg, callback) {
                     data.type = "cancel";
