@@ -131,7 +131,7 @@ var controller = {
                     "interface": "view1"
                 },
                 "channel": {
-                    "wrapped": false,
+                    "wrapped": true,
                     "mobile": true
                 }
             }
