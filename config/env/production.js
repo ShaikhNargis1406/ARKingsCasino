@@ -29,11 +29,11 @@ module.exports = {
   realHost: "http://ar.wohlig.co.in",
   emails: ["chintan@wohlig.com", "jagruti@wohlig.com", "tushar@wohlig.com", "chirag@wohlig.com", "harsh@wohlig.com"],
 
-  hostname: "kingscasino.uat1.evo-test.com",
+  hostname: "ar1.kingsplay.co",
   casinokey: "kingscasino00001",
   apitoken: "test123",
   authToken: "stage1234",
-  evoURL: "https://kingscasino.uat1.evo-test.com/ua/v1/kingscasino00001/test123",
+  evoURL: "https://ar1.kingsplay.co/ua/v1/kingscasino00001/5610fc41e71ac4f7fdc765fd74a95f74b60353cf",
 
   mainServer: "http://kingplay.online/api/"
   /***************************************************************************
