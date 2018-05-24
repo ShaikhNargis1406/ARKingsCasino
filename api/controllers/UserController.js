@@ -132,7 +132,7 @@ var controller = {
                 },
                 "channel": {
                     "wrapped": true,
-                    "mobile": true
+                    "mobile": req.body.mobile
                 }
             }
         }
