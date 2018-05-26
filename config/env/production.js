@@ -26,7 +26,7 @@ module.exports = {
    ***************************************************************************/
 
   port: 82,
-  realHost: "http://ar.kingsplay.co",
+  realHost: "https://ar.kingsplay.co",
   emails: ["chintan@wohlig.com", "jagruti@wohlig.com", "tushar@wohlig.com", "chirag@wohlig.com", "harsh@wohlig.com"],
 
   hostname: "ar1.kingsplay.co",
@@ -35,7 +35,7 @@ module.exports = {
   authToken: "live1234",
   evoURL: "https://ar1.kingsplay.co/ua/v1/kingscasino00001/5610fc41e71ac4f7fdc765fd74a95f74b60353cf",
 
-  mainServer: "http://kingplay.online/api/"
+  mainServer: "https://kingsplay.co/api/"
   /***************************************************************************
    * Set the log level in production environment to "silent"                 *
    ***************************************************************************/
