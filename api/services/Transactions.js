@@ -273,7 +273,7 @@ var model = {
                     }
                 }, function (err, diffData) {
                     if (err) {} else {
-                        var difference = Number(allCredits) - Number(allDebits);
+                        var difference = Number(diffData.allCredits) - Number(diffData.allDebits);
                         data.api = 'winMoney';
                         data.amount = data.transaction.amount;
                         data.subGame = data.game.type;
