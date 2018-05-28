@@ -271,9 +271,21 @@ var model = {
                     allCredits: function (callback) {
                         model.getCredit(data, callback);
                     }
-                }, function (err, data) {
+                }, function (err, diffData) {
                     if (err) {} else {
-                        console.log("data--------->>>>>>>>>>>", data);
+                        var difference = Number(allCredits) - Number(allDebits);
+                        data.api = 'winMoney';
+                        data.amount = data.transaction.amount;
+                        data.subGame = data.game.type;
+                        data.difference = difference;
+                        Transactions.winLooseApi(data, function (err, userData) {
+                            if (err) {
+                                console.log("user does not exist");
+
+                            } else {
+                                console.log("user", userData);
+                            }
+                        });
                     }
                 });
             }
