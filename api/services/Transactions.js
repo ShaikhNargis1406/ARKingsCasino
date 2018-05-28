@@ -264,6 +264,18 @@ var model = {
             } else {
                 console.log("result--- credit", result);
                 callback(null, result);
+                async.parallel({
+                    allDebits: function (callback) {
+                        model.getDebit(data, callback);
+                    },
+                    allCredits: function (callback) {
+                        model.getCredit(data, callback);
+                    }
+                }, function (err, data) {
+                    if (err) {} else {
+                        console.log("data--------->>>>>>>>>>>", data);
+                    }
+                });
             }
         });
     },
@@ -407,6 +419,38 @@ var model = {
             } else {
                 console.log('inside else');
                 callback(null, {});
+            }
+        });
+    },
+    getDebit: function (data, callback) {
+        Transactions.find({
+            "game.id": data.game.id
+        }).exec(function (err, found) {
+            if (err || _.isEmpty(found)) {
+                console.log('error');
+                callback(err, {});
+            } else {
+                var sumAmt = _.sumBy(found, function (o) {
+                    return o.transaction.amount;
+                });
+                console.log("sumAmt", sumAmt);
+                callback(null, sumAmt);
+            }
+        });
+    },
+    getCredit: function (data, callback) {
+        Transactions.find({
+            "game.id": data.game.id
+        }).exec(function (err, found) {
+            if (err || _.isEmpty(found)) {
+                console.log('error');
+                callback(err, {});
+            } else {
+                var sumAmt = _.sumBy(found, function (o) {
+                    return o.transaction.amount;
+                });
+                console.log("sumAmt", sumAmt);
+                callback(null, sumAmt);
             }
         });
     },
