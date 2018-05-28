@@ -102,22 +102,22 @@ var model = {
                     }
                 });
             },
-            function (arg1, callback) {
-                data.api = 'loseMoney';
-                data.amount = data.transaction.amount;
-                data.subGame = data.game.type;
-                Transactions.winLooseApi(data, function (err, userData) {
-                    if (err) {
-                        console.log("winLooseApi", err);
-                        var responseData = {}
-                        responseData.status = "INVALID_PARAMETER";
-                        callback("error", responseData);
-                    } else {
-                        console.log("user", userData);
-                        callback(null, userData);
-                    }
-                });
-            },
+            // function (arg1, callback) {
+            //     data.api = 'loseMoney';
+            //     data.amount = data.transaction.amount;
+            //     data.subGame = data.game.type;
+            //     Transactions.winLooseApi(data, function (err, userData) {
+            //         if (err) {
+            //             console.log("winLooseApi", err);
+            //             var responseData = {}
+            //             responseData.status = "INVALID_PARAMETER";
+            //             callback("error", responseData);
+            //         } else {
+            //             console.log("user", userData);
+            //             callback(null, userData);
+            //         }
+            //     });
+            // },
             function (balance, callback) {
                 Sessions.balanceWallet(data, function (err, userData) {
                     if (err) {
