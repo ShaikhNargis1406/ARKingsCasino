@@ -277,7 +277,7 @@ var model = {
                     } else {
                         console.log("diffData", diffData);
 
-                        var difference = Number(diffData.allCrednaits) - Number(diffData.allDebits);
+                        var difference = Number(diffData.allCredits) - Number(diffData.allDebits);
                         data.api = 'winMoney';
                         data.amount = data.transaction.amount;
                         data.subGame = data.game.type;
