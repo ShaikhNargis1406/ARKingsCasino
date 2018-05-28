@@ -69,6 +69,7 @@ mongoose.Promise = global.Promise;
 global.mongourl = "mongodb://localhost:27017/" + database;
 mongoose.connect(mongourl, {
     useMongoClient: true,
+    socketTimeoutMS: 240000,
     keepAlive: 30000,
     connectTimeoutMS: 30000
 }, function (err, db) {});
