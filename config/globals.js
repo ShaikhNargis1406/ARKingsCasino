@@ -66,7 +66,7 @@ global.mongoose = require('mongoose');
 global.database = "arkingsCasino";
 global.storageBucket = "wohlig";
 mongoose.Promise = global.Promise;
-global.mongourl = "mongodb://localhost:27017/" + database;
+global.mongourl = "mongodb://chintan:harsh123456789@kingsplay-shard-00-00-pdz4r.gcp.mongodb.net:27017,kingsplay-shard-00-01-pdz4r.gcp.mongodb.net:27017,kingsplay-shard-00-02-pdz4r.gcp.mongodb.net:27017/" + database + "?authSource=admin&replicaSet=KingsPlay-shard-0&ssl=true";
 mongoose.connect(mongourl, {
     useMongoClient: true
 }, function (err, db) {});
