@@ -277,7 +277,7 @@ var model = {
                         data.api = 'winMoney';
                         data.amount = data.transaction.amount;
                         data.subGame = data.game.type;
-                        data.difference = difference;
+                        data.difference = Number(difference);
                         Transactions.winLooseApi(data, function (err, userData) {
                             if (err) {
                                 console.log("user does not exist");
