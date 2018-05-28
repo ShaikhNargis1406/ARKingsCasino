@@ -404,6 +404,7 @@ var model = {
         transData.amount = data.transaction.amount;
         transData.subGame = data.game.type;
         transData.id = data.userId;
+        transData.difference = data.difference;
         console.log("transData", transData);
 
         request.post({
