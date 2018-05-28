@@ -71,7 +71,9 @@ mongoose.connect(mongourl, {
     useMongoClient: true,
     socketTimeoutMS: 240000,
     keepAlive: 30000,
-    connectTimeoutMS: 30000
+    connectTimeoutMS: 30000,
+    reconnectTries: 30, // Retry up to 30 times
+    reconnectInterval: 500, // Reconnect every 500ms
 }, function (err, db) {});
 
 
