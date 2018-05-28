@@ -272,8 +272,12 @@ var model = {
                         model.getCredit(data, callback);
                     }
                 }, function (err, diffData) {
-                    if (err) {} else {
-                        var difference = Number(diffData.allCredits) - Number(diffData.allDebits);
+                    if (err) {
+                        console.log("error in diffData");
+                    } else {
+                        console.log("diffData", diffData);
+
+                        var difference = Number(diffData.allCrednaits) - Number(diffData.allDebits);
                         data.api = 'winMoney';
                         data.amount = data.transaction.amount;
                         data.subGame = data.game.type;
