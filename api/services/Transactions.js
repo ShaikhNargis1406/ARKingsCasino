@@ -424,8 +424,8 @@ var model = {
     },
     getDebit: function (data, callback) {
         Transactions.find({
-            "game.id": data.game.id,
-            "type": "debit"
+            "game.id": data.game.id
+            // "type": "debit"
         }).exec(function (err, found) {
             if (err || _.isEmpty(found)) {
                 console.log('error');
