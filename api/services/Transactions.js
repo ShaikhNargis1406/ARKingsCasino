@@ -185,6 +185,7 @@ var model = {
                         callback(null, responseData);
                     } else {
                         // console.log("user", userData);
+                        userData.balance = Number(userData.balance) + Number(data.transaction.amount)
                         callback(null, userData);
                     }
                 });
