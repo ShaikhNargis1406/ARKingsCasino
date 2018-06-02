@@ -115,7 +115,7 @@ var controller = {
                 "nickname": req.body.nickname,
                 "country": 'IN',
                 "language": 'en',
-                "currency": 'HKD',
+                "currency": 'TKN',
                 "session": {
                     "id": req.body.sessionId,
                     "ip": "103.216.164.118"
